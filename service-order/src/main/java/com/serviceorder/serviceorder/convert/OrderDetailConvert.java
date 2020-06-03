@@ -7,7 +7,7 @@ import dto.OrdersDTO;
 
 public class OrderDetailConvert {
 
-    public static OrderdetailDTO convertOrderDetailDtoToOrderDetail(OrderDetail orderDetail){
+    public static OrderdetailDTO convertOrderDetailToOrderDetailDTO(OrderDetail orderDetail){
         OrderdetailDTO orderdetailDTO = new OrderdetailDTO();
 
         orderdetailDTO.setDeltailId(orderDetail.getDeltailId());
@@ -20,7 +20,7 @@ public class OrderDetailConvert {
 
     }
 
-    public static OrderDetail convertOrderDetailToOrderDetailDto(OrderdetailDTO orderdetailDTO){
+    public static OrderDetail convertOrderDetailDTOToOrderDetail(OrderdetailDTO orderdetailDTO){
         OrderDetail orderDetail = new OrderDetail();
 
         orderDetail.setDeltailId(orderdetailDTO.getDeltailId());
