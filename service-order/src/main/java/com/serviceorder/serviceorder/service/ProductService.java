@@ -74,4 +74,8 @@ public class ProductService {
         return Optional.empty();
     }
 
+    public Boolean checkExist(ProductDTO productDTO){
+        return productRepository.findByName(productDTO.getProductName());
+    }
+
 }
