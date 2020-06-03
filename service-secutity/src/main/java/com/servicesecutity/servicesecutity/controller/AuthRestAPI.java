@@ -46,7 +46,7 @@ public class AuthRestAPI {
     JwtProvider jwtProvider;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -63,15 +63,12 @@ public class AuthRestAPI {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if(userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity<String>("Fail -> Username is already taken!",
+        if(userRepository.existsByUsername(signUpRequest.getUsername()))
+            return new ResponseEntity<>("Fail -> Username is already taken!",
                     HttpStatus.BAD_REQUEST);
-        }
-
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity<String>("Fail -> Email is already in use!",
+        if(userRepository.existsByEmail(signUpRequest.getEmail()))
+            return new ResponseEntity<>("Fail -> Email is already in use!",
                     HttpStatus.BAD_REQUEST);
-        }
 
         // Creating user's account
         User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),

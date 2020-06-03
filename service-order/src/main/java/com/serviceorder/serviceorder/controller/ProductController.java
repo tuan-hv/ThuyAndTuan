@@ -18,6 +18,12 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @Create by: tuan den
+ * @date:3/6/2020
+ */
+
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -44,7 +50,7 @@ public class ProductController {
     public ResponseEntity<ProductDTO> getEmployeeById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
 
-        LOGGER.info("Find by id product :: " + productId);
+        LOGGER.info("Find by id product :: " , productId);
         ProductDTO companyDTO = productService.getProductById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
         LOGGER.info("Find by id product success!");
