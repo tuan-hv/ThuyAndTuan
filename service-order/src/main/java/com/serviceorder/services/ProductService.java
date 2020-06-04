@@ -26,7 +26,7 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Optional<List<ProductDTO>> findAllProduct(){
+    public Optional<List<ProductDTO>> findAllProduct() {
         List<Product> productList = productRepository.findAll();
 
         if (productList != null) {
@@ -44,6 +44,7 @@ public class ProductService {
     public Optional<ProductDTO> getProductById(Integer productId) {
         Optional<Product> product = productRepository.findById(productId);
 
+
         if (product.isPresent()) {
             LOGGER.info("get product by id success...");
             return Optional.of(ProductConvert.convertProductToProductDto(product.get()));
@@ -53,14 +54,13 @@ public class ProductService {
     }
 
     public Optional<ProductDTO> createProduct(ProductDTO productDTO) {
-        try{
-            Product productUpdate = productRepository.save(ProductConvert.convertProductDtoToProduct(productDTO));
-            productDTO.setProductId(productUpdate.getProductId());
+        try {
+            Product productCreate = productRepository.save(ProductConvert.convertProductDtoToProduct(productDTO));
+            productDTO.setProductId(productCreate.getProductId());
             LOGGER.info("save product success!");
             return Optional.of(productDTO);
-        }
-        catch (Exception e){
-            LOGGER.error("error with save product ::",e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("error with save product ::", e.getMessage());
             return Optional.empty();
         }
     }
@@ -69,18 +69,27 @@ public class ProductService {
         Optional<Product> productUpdate = productRepository.findById(productId);
 
         if (productUpdate.isPresent()) {
-            ProductConvert.convertProductDtoToProduct(productDTO);
-            productUpdate.get().setProductId(productId);
+
+            productUpdate.get().setProductId(productDTO.getProductId());
+            productUpdate.get().setDescription(productDTO.getDescription());
+            productUpdate.get().setName(productDTO.getProductName());
+            productUpdate.get().setPrice(productDTO.getPrice());
+            productUpdate.get().setImage(productDTO.getImage());
+            productUpdate.get().setCreatedAt(productDTO.getCreatedAt());
+            productUpdate.get().setUpdatedAt(productDTO.getUpdatedAt());
+            productUpdate.get().setStatus(productDTO.getStatus());
+
             productRepository.save(productUpdate.get());
             LOGGER.info("update product success!");
+            productDTO.setProductId(productId);
             return Optional.of(productDTO);
         }
         LOGGER.info("update product fail!");
         return Optional.empty();
     }
 
-    public Boolean checkExist(ProductDTO productDTO){
-        return productRepository.findByName(productDTO.getProductName());
+    public Boolean checkExist(ProductDTO productDTO) {
+        return productRepository.findByName(productDTO.getProductName()).isPresent();
     }
 
 }

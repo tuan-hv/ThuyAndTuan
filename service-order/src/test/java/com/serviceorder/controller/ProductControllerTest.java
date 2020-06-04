@@ -132,11 +132,6 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productDTO)))
                 .andExpect(status().isOk());
-        /*.andExpect(header().string("location", containsString("http://localhost/api/v1/companies")));*/
-
-        /*verify(companyService, times(1)).exists(user);
-        verify(companyService, times(1)).createCompany(any(CompanyDTO.class));
-        verifyNoMoreInteractions(companyService);*/
     }
 
     @Test
@@ -167,7 +162,6 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productDTO)))
                 .andExpect(status().isOk());
-        /*verify(companyService, times(1)).getCompanyById(companyDTO.getId());*/
         verify(productService, times(1)).updateProduct(productDTO.getProductId(), productDTO);
         verifyNoMoreInteractions(productService);
     }
@@ -196,9 +190,6 @@ public class ProductControllerTest {
         mockMvc.perform(
                 delete("/api/products/{id}", product.getProductId()))
                 .andExpect(status().isOk());
-        /*verify(companyService, times(1)).getCompanyById(companyDTO.getId());
-        verify(companyService, times(1)).updateCompany(companyDTO.getId(), companyDTO);
-        verifyNoMoreInteractions(companyService);*/
     }
 
     @Test
@@ -210,9 +201,6 @@ public class ProductControllerTest {
         mockMvc.perform(
                 delete("/api/products/{id}", productDTO.getProductId()))
                 .andExpect(status().isNotFound());
-
-        /*verify(companyService, times(1)).getCompanyById(companyDTO.getId());
-        verifyNoMoreInteractions(companyService);*/
     }
 
 

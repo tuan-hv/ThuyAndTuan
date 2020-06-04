@@ -39,7 +39,7 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDTO>> getAllCompanies() {
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
         Optional<List<ProductDTO>> companyDTOS = productService.findAllProduct();
         if (companyDTOS.isPresent()) {
             return ResponseEntity.ok(companyDTOS.get());
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> getEmployeeById(@PathVariable(value = "id") Integer productId)
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
 
         LOGGER.info("Find by id product :: " , productId);
@@ -60,9 +60,9 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<ProductDTO> createCompany(@Valid @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
 
-        if (productDTO != null && productService.checkExist(productDTO))
+        if (productService.checkExist(productDTO))
             throw new FileDuplicateException("Product is already exist!");
         LOGGER.info("starting save product...");
         Optional<ProductDTO> createCompany = productService.createProduct(productDTO);
@@ -70,7 +70,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> updateCompany(@PathVariable(value = "id") Integer productId,
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable(value = "id") Integer productId,
                                                     @Valid @RequestBody ProductDTO companyDTO) throws ResourceNotFoundException {
 
         LOGGER.info("starting save product...");
@@ -80,7 +80,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> deleteCompany(@PathVariable(value = "id") Integer productId)
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
         LOGGER.info("start get product by id!");
         Product product = productRepository.findById(productId)
