@@ -1,9 +1,7 @@
 package com.serviceorder.serviceorder.convert;
 
 import com.serviceorder.serviceorder.entity.OrderDetail;
-import com.serviceorder.serviceorder.entity.Orders;
 import dto.OrderdetailDTO;
-import dto.OrdersDTO;
 
 public class OrderDetailConvert {
 
