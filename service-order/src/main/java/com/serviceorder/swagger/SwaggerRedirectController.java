@@ -12,14 +12,4 @@ class SwaggerRedirectController {
 	public ModelAndView redirect1() {
 		return new ModelAndView("redirect:/swagger-ui.html");
 	}
-
-	@RequestMapping(value = "/ui", method = RequestMethod.GET)
-	public ModelAndView redirect2() {
-		return new ModelAndView("redirect:/swagger-ui.html");
-	}
-
-	@RequestMapping(value = "/doc", method = RequestMethod.GET)
-	public ModelAndView redirect3() {
-		return new ModelAndView("redirect:/swagger-ui.html");
-	}
 }
