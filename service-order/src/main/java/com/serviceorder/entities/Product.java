@@ -1,5 +1,6 @@
 package com.serviceorder.entities;
 
+import com.serviceorder.validators.ContactPriceConstraint;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
