@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,16 +20,22 @@ public class OrderDetail implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int deltailId;
+
+    @Min(0)
     @Column(name = "quantity")
     private int quantity;
+
     @Column(name = "price", precision = 20, scale = 3)
     private double price;
+
     @CreationTimestamp
     @Column(name = "createdat", updatable = false)
     private Date createdAt;
+
     @UpdateTimestamp
     @Column(name = "updatedat")
     private Date updatedAt;
+
     @Column(name = "status")
     private int status;
 
