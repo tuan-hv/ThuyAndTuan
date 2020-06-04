@@ -6,7 +6,7 @@ import dto.OrdersDTO;
 
 public class OrderConvert {
 
-    public static OrdersDTO convertOrderDtoToOrder(Orders orders){
+    public static OrdersDTO convertOrdertoToOrderDTO(Orders orders){
         OrdersDTO ordersDTO = new OrdersDTO();
 
         ordersDTO.setOrdersId(orders.getOrderId());
@@ -18,7 +18,7 @@ public class OrderConvert {
         return ordersDTO;
     }
 
-    public static Orders convertOrderToOrderDto(OrdersDTO ordersDTO){
+    public static Orders convertOrderDTOToOrder(OrdersDTO ordersDTO){
         Orders orders = new Orders();
 
         orders.setOrderId(ordersDTO.getOrdersId());
