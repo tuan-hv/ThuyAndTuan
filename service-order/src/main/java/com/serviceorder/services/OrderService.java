@@ -60,16 +60,16 @@ public class OrderService {
                     orderdetailDTO.setProductDTO(productDTO);
                     orderdetailDTOList.add(orderdetailDTO);
                 });
-
                 ordersDTO.setOrderDetailEntities(orderdetailDTOList);
                 ordersDTOList.add(ordersDTO);
             });
+            return ordersDTOList;
         }
         LOGGER.info("get all Orders fail!");
-        return ordersDTOList;
+        return new ArrayList<>();
     }
 
-    public OrdersDTO getOrderByID(int orderID) throws ResourceNotFoundException {
+    public OrdersDTO getOrderByID(int orderID){
         Optional<Orders> orders = orderRepository.findById(orderID);
         OrdersDTO ordersDTO;
         if(orders.isPresent()){
@@ -85,18 +85,20 @@ public class OrderService {
             });
             ordersDTO.setOrderDetailEntities(orderdetailDTOList);
             LOGGER.info("get Orders by id successfully");
+            return ordersDTO;
         }else {
             LOGGER.info("get Orders by id fail");
-            throw new ResourceNotFoundException("Can not find the order with id: "+ orderID);
+//            throw new ResourceNotFoundException("Can not find the order with id: "+ orderID);
+            return null;
         }
-        return ordersDTO;
     }
+
 
 
     public OrdersDTO createOrder(OrdersDTO ordersDTO){
         try{
             Orders orders =  OrderConvert.convertOrderDTOToOrder(ordersDTO);
-            orderRepository.save(orders);
+            Orders orderCreate = orderRepository.save(orders);
             List<OrderDetail> orderDetailsList = new ArrayList<>();
             List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderDetailEntities();
             orderDetailDTOList.forEach(o -> {
@@ -111,18 +113,23 @@ public class OrderService {
                     orderDetailRepository.save(orderDetail);
                 }
             });
+            ordersDTO.setOrdersId(orderCreate.getOrderId());
             LOGGER.info("create order successfully!");
+            return ordersDTO;
+
         }catch (Exception e){
             LOGGER.error("error when creating order ::",e.getMessage());
+            return null;
         }
-        return ordersDTO;
     }
 
 
-    public void changeOrderStatus(int orderID){
+    public OrdersDTO changeOrderStatus(int orderID){
         Optional<Orders> orders = orderRepository.findById(orderID);
+        OrdersDTO ordersDTO = new OrdersDTO();
         if(orders.isPresent()){
-          switch (orders.get().getStatus()){
+            ordersDTO = OrderConvert.convertOrdertoToOrderDTO(orders.get());
+            switch (orders.get().getStatus()){
               case 0:
                   orders.get().setStatus(1);
                   break;
@@ -137,8 +144,14 @@ public class OrderService {
                   break;
           }
             orderRepository.save(orders.get());
+            ordersDTO.setOrdersId(orders.get().getOrderId());
+            ordersDTO.setStatus(orders.get().getStatus());
+            LOGGER.info("change order status successfully!");
+            return ordersDTO;
+        }else {
+            LOGGER.info("change order status fail!");
+            return null;
         }
-
     }
 
 
