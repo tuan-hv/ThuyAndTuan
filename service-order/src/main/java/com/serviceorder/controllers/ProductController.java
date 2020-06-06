@@ -5,9 +5,9 @@ import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.entities.Product;
 import com.serviceorder.services.ProductService;
 import com.serviceorder.utils.Constant;
-import dto.ProductDTO;
-import exception.FileDuplicateException;
-import exception.ResourceNotFoundException;
+import com.serviceorder.dto.ProductDTO;
+import com.serviceorder.exception.FileDuplicateException;
+import com.serviceorder.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class ProductController {
 
         LOGGER.info("Find by id product :: " , productId);
         ProductDTO companyDTO = productService.getProductById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
         LOGGER.info("Find by id product success!");
         return ResponseEntity.ok().body(companyDTO);
     }

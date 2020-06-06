@@ -2,7 +2,7 @@ package com.serviceorder.converts;
 
 
 import com.serviceorder.entities.Orders;
-import dto.OrdersDTO;
+import com.serviceorder.dto.OrdersDTO;
 
 public class OrderConvert {
 

@@ -1,4 +1,4 @@
-package exception;
+package com.serviceorder.exception;
 
 import java.util.Date;
 
