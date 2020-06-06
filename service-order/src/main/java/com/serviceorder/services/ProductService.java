@@ -28,7 +28,6 @@ public class ProductService {
 
     public Optional<List<ProductDTO>> findAllProduct() {
         List<Product> productList = productRepository.findAll();
-
         if (productList != null) {
             LOGGER.info("get all Product success!");
             List<ProductDTO> productDTOList = new ArrayList<>();
