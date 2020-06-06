@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**
@@ -28,38 +29,36 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping("/orders")
-    public ResponseEntity<List<OrdersDTO>> getAllOrders(){
+    public ResponseEntity<List<OrdersDTO>> getAllOrders() {
         List<OrdersDTO> ordersDTOList = orderService.getAllOrders();
-        if (ordersDTOList.isEmpty()){
+        if (ordersDTOList.isEmpty()) {
             LOGGER.info("No orders found!");
+            return ResponseEntity.noContent().build();
         }
         return new ResponseEntity<>(ordersDTOList, HttpStatus.OK);
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO){
+    public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO) {
         orderService.createOrder(ordersDTO);
         return new ResponseEntity<>(ordersDTO, HttpStatus.CREATED);
 
     }
 
     @PutMapping("/orders/{orderId}")
-    public  ResponseEntity<Object> changeOrderStatus(@PathVariable("orderId") int orderId){
+    public ResponseEntity<Object> changeOrderStatus(@PathVariable("orderId") int orderId) {
         orderService.changeOrderStatus(orderId);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(orderService.changeOrderStatus(orderId), HttpStatus.OK);
 
     }
 
     @GetMapping("/orders/{orderId}")
-    public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("orderId") int orderId){
-        OrdersDTO ordersDTO = new OrdersDTO();
-        try {
-            ordersDTO = orderService.getOrderByID(orderId);
-        } catch (ResourceNotFoundException e) {
-            LOGGER.info("Can not find order with id: "+ orderId);
-            e.printStackTrace();
+    public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("orderId") int orderId) throws ResourceNotFoundException {
+        OrdersDTO ordersDTO = orderService.getOrderByID(orderId);
+        if (ordersDTO != null) {
+            return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
+        return ResponseEntity.notFound().build();
     }
 
 
