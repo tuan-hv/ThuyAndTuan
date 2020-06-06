@@ -1,7 +1,7 @@
 package com.serviceorder.converts;
 
 import com.serviceorder.entities.Product;
-import dto.ProductDTO;
+import com.serviceorder.dto.ProductDTO;
 
 public class ProductConvert {
 

@@ -1,13 +1,11 @@
 package com.serviceorder.controller;
 
 import com.serviceorder.controllers.OrderController;
-import com.serviceorder.entities.OrderDetail;
+import com.serviceorder.dto.OrderdetailDTO;
+import com.serviceorder.dto.OrdersDTO;
+import com.serviceorder.exception.GlobalExceptionHandler;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.services.OrderService;
-import dto.OrderdetailDTO;
-import dto.OrdersDTO;
-import dto.ProductDTO;
-import exception.GlobalExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -24,15 +22,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * ThuyAndTuan

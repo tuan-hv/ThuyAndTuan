@@ -3,7 +3,7 @@ package com.serviceorder.services;
 import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.entities.Product;
-import dto.ProductDTO;
+import com.serviceorder.dto.ProductDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

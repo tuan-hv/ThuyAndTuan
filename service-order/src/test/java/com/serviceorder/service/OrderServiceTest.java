@@ -1,17 +1,16 @@
 package com.serviceorder.service;
 
 import com.serviceorder.converts.ProductConvert;
+import com.serviceorder.dto.OrderdetailDTO;
+import com.serviceorder.dto.OrdersDTO;
+import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.entities.OrderDetail;
 import com.serviceorder.entities.Orders;
+import com.serviceorder.exception.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.OrderService;
-import dto.OrderdetailDTO;
-import dto.OrdersDTO;
-import dto.ProductDTO;
-import exception.ResourceNotFoundException;
-import jdk.nashorn.internal.objects.NativeUint8Array;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

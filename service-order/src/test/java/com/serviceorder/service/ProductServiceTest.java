@@ -3,7 +3,7 @@ import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.entities.Product;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
-import dto.ProductDTO;
+import com.serviceorder.dto.ProductDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
