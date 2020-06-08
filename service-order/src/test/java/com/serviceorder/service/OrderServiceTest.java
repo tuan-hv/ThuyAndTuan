@@ -6,7 +6,7 @@ import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.entities.OrderDetail;
 import com.serviceorder.entities.Orders;
-import com.serviceorder.exception.ResourceNotFoundException;
+import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
@@ -20,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

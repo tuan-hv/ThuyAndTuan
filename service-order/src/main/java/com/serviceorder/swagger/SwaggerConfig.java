@@ -20,6 +20,11 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static springfox.documentation.builders.PathSelectors.regex;
 
+/**
+ * @Create by: tuan den
+ * @date:4/6/2020
+ */
+
 @Configuration
 @EnableSwagger2
 class SwaggerConfig {

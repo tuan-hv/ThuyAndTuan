@@ -4,10 +4,15 @@ import com.payment.services.RestService;
 import com.payment.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -25,17 +30,16 @@ public class PaymentController {
     @Value("${api.api.order}")
     private String urlOrder;
 
-    @GetMapping("/payment")
+    @GetMapping("/payments")
     public String payment() throws Exception {
         String authToken = jwtTokenUtil.getJwtTokenFromSecurityContext();
-        /*String authToken2 = restService.execute(new StringBuilder(urlAuthentication).append("/auth/signin").toString(),
-                HttpMethod.GET, null, null, new ParameterizedTypeReference<String>() {}).getBody();*/
         HttpHeaders header = new HttpHeaders();
         header.setBearerAuth(authToken);
 
-        /*String ordersDTO = restService.execute(new StringBuilder(urlOrder).append("/orders").toString(),
-                HttpMethod.GET, header, null, new ParameterizedTypeReference<String>() {}).getBody();*/
+        String ordersDTO = restService.execute(new StringBuilder(urlOrder).append("/orders").toString(),
+                HttpMethod.GET, header, null, new ParameterizedTypeReference<String>() {}).getBody();
 
         return "";
     }
+
 }

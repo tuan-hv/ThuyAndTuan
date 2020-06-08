@@ -6,7 +6,7 @@ import com.serviceorder.entities.Product;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
 import com.serviceorder.dto.ProductDTO;
-import com.serviceorder.exception.GlobalExceptionHandler;
+import com.serviceorder.exceptions.GlobalExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;

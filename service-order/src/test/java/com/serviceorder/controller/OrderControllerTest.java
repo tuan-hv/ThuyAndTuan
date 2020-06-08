@@ -3,7 +3,7 @@ package com.serviceorder.controller;
 import com.serviceorder.controllers.OrderController;
 import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
-import com.serviceorder.exception.GlobalExceptionHandler;
+import com.serviceorder.exceptions.GlobalExceptionHandler;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.services.OrderService;
 import org.junit.Before;

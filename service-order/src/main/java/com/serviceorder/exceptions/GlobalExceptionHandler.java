@@ -1,4 +1,4 @@
-package com.serviceorder.exception;
+package com.serviceorder.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

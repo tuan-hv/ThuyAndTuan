@@ -1,4 +1,4 @@
-package com.serviceorder.exception;
+package com.serviceorder.exceptions;
 
 import lombok.Data;
 

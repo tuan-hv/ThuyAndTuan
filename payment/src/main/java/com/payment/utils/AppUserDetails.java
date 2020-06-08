@@ -1,4 +1,4 @@
-package com.serviceorder.dto;
+package com.payment.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
