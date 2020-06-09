@@ -4,6 +4,7 @@ import com.serviceorder.converts.OrderConvert;
 import com.serviceorder.converts.OrderDetailConvert;
 import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.entities.Product;
+import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
@@ -87,45 +88,49 @@ public class OrderService {
             return ordersDTO;
         }else {
             LOGGER.info("get Orders by id fail");
-//            throw new ResourceNotFoundException("Can not find the order with id: "+ orderID);
             return null;
         }
     }
 
 
 
-    public OrdersDTO createOrder(OrdersDTO ordersDTO){
-        try{
-            Orders orders =  OrderConvert.convertOrderDTOToOrder(ordersDTO);
+    public OrdersDTO createOrder(OrdersDTO ordersDTO) {
+        try {
+            Orders orders = OrderConvert.convertOrderDTOToOrder(ordersDTO);
             Orders orderCreate = orderRepository.save(orders);
             List<OrderDetail> orderDetailsList = new ArrayList<>();
             List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderDetailEntities();
             orderDetailDTOList.forEach(o -> {
                 OrderDetail orderDetail = OrderDetailConvert.convertOrderDetailDTOToOrderDetail(o);
-                Optional<Product> product = productRepository.findById(o.getProductDTO().getProductId());
-                if (product.isPresent()){
-                    orderDetail.setProduct(product.get());
-                    orderDetail.setPrice(product.get().getPrice() * orderDetail.getQuantity());
-                    orderDetailsList.add(orderDetail);
-                    orders.setOrderDetailEntities(orderDetailsList);
-                    orderDetail.setOrders(orders);
-                    orderDetailRepository.save(orderDetail);
+                Product product = null;
+                try {
+                    product = productRepository.findById(o.getProductDTO().getProductId()).orElseThrow(() -> new ResourceNotFoundException(" product not found"));
+                } catch (ResourceNotFoundException e) {
+                    LOGGER.info("product not found");
+                    e.printStackTrace();
                 }
+                orderDetail.setProduct(product);
+                orderDetail.setPrice(product.getPrice() * orderDetail.getQuantity());
+                orderDetailsList.add(orderDetail);
+                orders.setOrderDetailEntities(orderDetailsList);
+                orderDetail.setOrders(orders);
+                orderDetailRepository.save(orderDetail);
+
             });
             ordersDTO.setOrdersId(orderCreate.getOrderId());
             LOGGER.info("create order successfully!");
             return ordersDTO;
-
-        }catch (Exception e){
-            LOGGER.error("error when creating order ::",e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error when creating order!");
             return null;
         }
+
     }
 
 
     public OrdersDTO changeOrderStatus(int orderID){
         Optional<Orders> orders = orderRepository.findById(orderID);
-        OrdersDTO ordersDTO = new OrdersDTO();
+        OrdersDTO ordersDTO;
         if(orders.isPresent()){
             ordersDTO = OrderConvert.convertOrdertoToOrderDTO(orders.get());
             switch (orders.get().getStatus()){
