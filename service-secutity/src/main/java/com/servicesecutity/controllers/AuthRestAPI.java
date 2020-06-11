@@ -52,7 +52,7 @@ public class AuthRestAPI {
     JwtProvider jwtProvider;
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -64,7 +64,7 @@ public class AuthRestAPI {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtProvider.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return ResponseEntity.ok(jwt);
     }
 
     @PostMapping("/signup")
@@ -109,4 +109,5 @@ public class AuthRestAPI {
 
         return ResponseEntity.ok().body("User registered successfully!");
     }
+
 }

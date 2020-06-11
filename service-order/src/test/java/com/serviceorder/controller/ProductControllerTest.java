@@ -154,15 +154,13 @@ public class ProductControllerTest {
     public void test_update_product_success() throws Exception {
         ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
 
-        when(productService.getProductById(anyInt())).thenReturn(Optional.of(productDTO));
-        doReturn(Optional.of(productDTO)).when(productService).updateProduct(productDTO.getProductId(), productDTO);
-
+        when(productService.updateProduct(1, productDTO)).thenReturn(Optional.of(productDTO));
         mockMvc.perform(
-                put("/api/products/{id}", productDTO.getProductId())
+                put("/api/products/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productDTO)))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).updateProduct(productDTO.getProductId(), productDTO);
+        verify(productService, times(1)).updateProduct(1, productDTO);
         verifyNoMoreInteractions(productService);
     }
 

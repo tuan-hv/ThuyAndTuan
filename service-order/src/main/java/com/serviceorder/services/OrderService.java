@@ -92,6 +92,30 @@ public class OrderService {
         }
     }
 
+    public OrdersDTO getOrderByUserName(String username){
+        Optional<Orders> orders = orderRepository.findOrdersByUserName(username);
+        OrdersDTO ordersDTO;
+        if(orders.isPresent()){
+            List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
+            List<OrderDetail> orderdetailList = orders.get().getOrderDetailEntities();
+            ordersDTO = OrderConvert.convertOrdertoToOrderDTO(orders.get());
+            orderdetailList.forEach(orderDetail -> {
+                OrderdetailDTO orderdetailDTO = OrderDetailConvert.convertOrderDetailToOrderDetailDTO(orderDetail);
+                Product product = orderDetail.getProduct();
+                ProductDTO productDTO = ProductConvert.convertProductToProductDto(product);
+                orderdetailDTO.setProductDTO(productDTO);
+                orderdetailDTOList.add(orderdetailDTO);
+            });
+            ordersDTO.setOrderDetailEntities(orderdetailDTOList);
+            LOGGER.info("get Orders by id successfully");
+            return ordersDTO;
+        }else {
+            LOGGER.info("get Orders by id fail");
+//            throw new ResourceNotFoundException("Can not find the order with id: "+ orderID);
+            return null;
+        }
+    }
+
 
 
     public OrdersDTO createOrder(OrdersDTO ordersDTO){

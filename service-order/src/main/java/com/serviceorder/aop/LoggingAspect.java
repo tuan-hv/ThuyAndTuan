@@ -31,12 +31,11 @@ public class LoggingAspect
     
     @Around("service()")
     public Object aroundServiceMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Object result = proceedingJoinPoint.proceed();
-        return result;
+        return proceedingJoinPoint.proceed();
     }
     
     @AfterThrowing (pointcut = "service()", throwing = "ex")
-    public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) throws IllegalAccessException {
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
     	CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
     	log.error("Exception in {}() with message = {}", codeSignature.getDeclaringTypeName(), ex.getMessage());
     	ApiLog apiLog = new ApiLog();

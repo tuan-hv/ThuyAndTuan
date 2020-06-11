@@ -61,5 +61,14 @@ public class OrderController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/orders/{usernmae}/username")
+    public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("usernmae") String usernmae) throws ResourceNotFoundException {
+        OrdersDTO ordersDTO = orderService.getOrderByUserName(usernmae);
+        if (ordersDTO != null) {
+            return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
 }

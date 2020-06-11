@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping("/products")
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         Optional<List<ProductDTO>> companyDTOS = productService.findAllProduct();
         if (companyDTOS.isPresent()) {
@@ -49,6 +51,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
 
