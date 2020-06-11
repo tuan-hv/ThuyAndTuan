@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(value = "/api")
