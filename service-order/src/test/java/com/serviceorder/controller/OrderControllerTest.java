@@ -3,6 +3,8 @@ package com.serviceorder.controller;
 import com.serviceorder.controllers.OrderController;
 import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
+import com.serviceorder.dto.ProductDTO;
+import com.serviceorder.entities.OrderDetail;
 import com.serviceorder.exceptions.GlobalExceptionHandler;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.services.OrderService;
@@ -11,6 +13,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,12 +25,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static com.serviceorder.controller.ProductControllerTest.asJsonString;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -49,9 +55,6 @@ public class OrderControllerTest {
 
     @Mock
     private OrderService orderService;
-
-    @Mock
-    private OrderRepository orderRepository;
 
 
     @Before
@@ -115,11 +118,81 @@ public class OrderControllerTest {
     @Test
     public void testGetOrderbyIdFail() throws Exception {
         when(orderService.getOrderByID(anyInt())).thenReturn(null);
-
         mockMvc.perform(get("/api/orders/{id}", 111))
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void testChangeStatus() throws Exception {
+        List<OrderdetailDTO> orderDetailList = new ArrayList<>();
+        OrdersDTO orderDTO = new OrdersDTO();
+        orderDTO.setOrdersId(1);
+        orderDTO.setTotalPrice(120.0);
+        orderDTO.setStatus(1);
+        orderDTO.setOrderDetailEntities(orderDetailList);
+        when(orderService.changeOrderStatus(1)).thenReturn(orderDTO);
 
+        mockMvc.perform(put("/api/orders/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.ordersId", is(1)))
+                .andExpect(jsonPath("$.status", is(1)));
+    }
 
+    @Test
+    public void testChangeStatusfail() throws Exception {
+        when(orderService.changeOrderStatus(1)).thenReturn(null);
+        mockMvc.perform(put("/api/orders/{id}", 1))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testCreateOrder() throws Exception {
+        List<OrderdetailDTO> orderDetailDTOList = new ArrayList<>();
+        OrderdetailDTO orderDetailDTO = new OrderdetailDTO();
+        orderDetailDTO.setAmount(1);
+        orderDetailDTO.setStatus(1);
+
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(1);
+        productDTO.setDescription("abc");
+        productDTO.setImage("image");
+        productDTO.setProductName("name");
+        orderDetailDTO.setProductDTO(productDTO);
+        orderDetailDTO.setPrice(productDTO.getPrice() * orderDetailDTO.getAmount());
+        orderDetailDTOList.add(orderDetailDTO);
+
+        OrdersDTO ordersDTO = new OrdersDTO();
+        ordersDTO.setTotalPrice(123.0);
+        ordersDTO.setStatus(0);
+        ordersDTO.setOrderDetailEntities(null);
+
+        when(orderService.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(ordersDTO);
+        mockMvc.perform(
+                post("/api/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(ordersDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.totalPrice", is(123.0)))
+                .andExpect(jsonPath("$.status", is(0)));
+    }
+
+    @Test
+    public void testCreateOrderFail() throws Exception {
+        OrdersDTO ordersDTO = new OrdersDTO();
+        ordersDTO.setTotalPrice(123.0);
+        ordersDTO.setStatus(0);
+        ordersDTO.setOrderDetailEntities(null);
+        when(orderService.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(null);
+        mockMvc.perform(
+                post("/api/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(ordersDTO)))
+                .andExpect(status().isBadRequest());
+    }
 }
+
+
+
+
+
