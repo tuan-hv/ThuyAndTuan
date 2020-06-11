@@ -4,7 +4,9 @@ import com.serviceorder.controllers.OrderController;
 import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.dto.ProductDTO;
+import com.serviceorder.dto.UserDTO;
 import com.serviceorder.entities.OrderDetail;
+import com.serviceorder.entities.Users;
 import com.serviceorder.exceptions.GlobalExceptionHandler;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.services.OrderService;
@@ -31,6 +33,7 @@ import static com.serviceorder.controller.ProductControllerTest.asJsonString;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -69,18 +72,17 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("Test GetAllOrders()")
-    public void testGetAllOrders() {
+    public void testGetAllOrders() throws Exception {
         List<OrderdetailDTO> orderdetailDTOList1 = new ArrayList<>();
         List<OrderdetailDTO> orderdetailDTOList2 = new ArrayList<>();
         List<OrderdetailDTO> orderdetailDTOList3 = new ArrayList<>();
 
         List<OrdersDTO> ordersDTOList = Arrays.asList(
-                new OrdersDTO(1, 123, orderdetailDTOList1),
-                new OrdersDTO(2, 123, orderdetailDTOList2),
-                new OrdersDTO(3, 123, orderdetailDTOList3));
+                new OrdersDTO(1, 123, orderdetailDTOList1, null),
+                new OrdersDTO(2, 123, orderdetailDTOList2, null),
+                new OrdersDTO(3, 123, orderdetailDTOList3, null));
 
         when(orderService.getAllOrders()).thenReturn(ordersDTOList);
-        try {
             mockMvc.perform(get("/api/orders"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -88,9 +90,7 @@ public class OrderControllerTest {
                     .andExpect(jsonPath("$[0].ordersId", is(1)))
                     .andExpect(jsonPath("$[1].ordersId", is(2)))
                     .andExpect(jsonPath("$[2].ordersId", is(3)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
 
@@ -105,7 +105,7 @@ public class OrderControllerTest {
     @Test
     public void testGetOrderbyId() throws Exception {
         List<OrderdetailDTO> orderdetailDTOList1 = new ArrayList<>();
-        OrdersDTO ordersDTO = new OrdersDTO(1, 123, orderdetailDTOList1);
+        OrdersDTO ordersDTO = new OrdersDTO(1, 123, orderdetailDTOList1, null);
         when(orderService.getOrderByID(anyInt())).thenReturn(ordersDTO);
 
         mockMvc.perform(get("/api/orders/{id}", 1))
@@ -190,7 +190,38 @@ public class OrderControllerTest {
                         .content(asJsonString(ordersDTO)))
                 .andExpect(status().isBadRequest());
     }
-}
+
+
+    @Test
+    public void testGetOrdersByName() throws Exception {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(1);
+        userDTO.setUserName("name");
+        List<OrdersDTO> ordersDTOList = Arrays.asList(
+                new OrdersDTO(1, 123, new ArrayList<>(), userDTO),
+                new OrdersDTO(2, 123, new ArrayList<>(), userDTO),
+                new OrdersDTO(3, 123, new ArrayList<>(), userDTO));
+
+        when(orderService.getOrderByUserName("name")).thenReturn(ordersDTOList);
+            mockMvc.perform(get("/api/orders/username/{username}", "name"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$", hasSize(3)))
+                    .andExpect(jsonPath("$[0].ordersId", is(1)))
+                    .andExpect(jsonPath("$[1].ordersId", is(2)))
+                    .andExpect(jsonPath("$[2].ordersId", is(3)));
+        }
+
+    @Test
+    public void testGetOrdersByNameFail() throws Exception {
+        when(orderService.getOrderByUserName(anyString())).thenReturn(null);
+        mockMvc.perform(get("/api/orders/username/{username}", "name"))
+                .andExpect(status().isNotFound());
+    }
+
+
+    }
+
 
 
 

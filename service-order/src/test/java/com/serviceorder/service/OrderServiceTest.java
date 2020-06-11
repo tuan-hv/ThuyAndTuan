@@ -4,8 +4,10 @@ import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.dto.ProductDTO;
+import com.serviceorder.dto.UserDTO;
 import com.serviceorder.entities.OrderDetail;
 import com.serviceorder.entities.Orders;
+import com.serviceorder.entities.Users;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
@@ -27,6 +29,8 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -57,15 +61,22 @@ public class OrderServiceTest {
 
 
     @Test
-    public void testGetAllOrder(){
+    public void getAllOrder(){
         List<Orders> ordersList = new ArrayList<>();
+        Users user1 = new Users();
+        Users user2 = new Users();
+        Users user3 = new Users();
+
         List<OrderDetail> orderDetailList = new ArrayList<>();
         Orders orders1 = new Orders();
         Orders orders2 = new Orders();
         Orders orders3 = new Orders();
 
+        orders1.setUsers(user1);
         orders1.setOrderDetailEntities(orderDetailList);
+        orders2.setUsers(user2);
         orders2.setOrderDetailEntities(orderDetailList);
+        orders3.setUsers(user3);
         orders3.setOrderDetailEntities(orderDetailList);
 
         ordersList.add(orders1);
@@ -78,20 +89,21 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void testGetAllOrderFail(){
+    public void getAllOrderFail(){
         when(orderRepository.findAll()).thenReturn(new ArrayList<>());
         List<OrdersDTO> ordersDTOS = orderService.getAllOrders();
         assertEquals(0, ordersDTOS.size());
     }
 
     @Test
-    public void testGetOrderById() throws ResourceNotFoundException {
+    public void getOrderById() {
         List<OrderDetail> orderDetailList = new ArrayList<>();
         Orders orders = new Orders();
         orders.setOrderId(1);
         orders.setTotalPrice(120.0);
         orders.setStatus(0);
         orders.setOrderDetailEntities(orderDetailList);
+        orders.setUsers(new Users());
 
         when(orderRepository.findById(1)).thenReturn(Optional.of(orders));
 
@@ -102,7 +114,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void testGetOrderByIDFail() {
+    public void getOrderByIDFail() {
         when(orderRepository.findById(1)).thenReturn(Optional.empty());
 
         OrdersDTO ordersDTO = orderService.getOrderByID(1);
@@ -110,7 +122,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void changeOrderStatus(){
+    public void changeOrderStatus() throws ResourceNotFoundException {
         List<OrderDetail> orderDetailList = new ArrayList<>();
         Orders orders = new Orders();
         orders.setOrderId(1);
@@ -125,15 +137,6 @@ public class OrderServiceTest {
         assertEquals(1, ordersDTO.getOrdersId());
 
     }
-
-    @Test
-    public void changeOrderStatusfail(){
-        when(orderRepository.findById(1)).thenReturn(Optional.empty());
-        OrdersDTO ordersDTO = orderService.changeOrderStatus(1);
-        assertEquals(null, ordersDTO);
-
-    }
-
 
     @Test
     public void addOrder(){
@@ -155,6 +158,7 @@ public class OrderServiceTest {
         ordersDTO.setTotalPrice(123.0);
         ordersDTO.setStatus(0);
         ordersDTO.setOrderDetailEntities(orderDetailDTOList);
+        ordersDTO.setUserDTO(new UserDTO());
 
         when(productRepository.findById(1)).thenReturn(Optional.of(ProductConvert.convertProductDtoToProduct(productDTO)));
 
@@ -184,6 +188,34 @@ public class OrderServiceTest {
         OrdersDTO createOrderDTO = orderService.createOrder(ordersDTO);
         assertEquals(null, createOrderDTO);
     }
+
+    @Test
+    public void getOrderByUsername() throws ResourceNotFoundException {
+        List<Orders> ordersList = new ArrayList<>();
+        Users user1 = new Users();
+        user1.setUserName("name1");
+
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        Orders orders1 = new Orders();
+        Orders orders2 = new Orders();
+        Orders orders3 = new Orders();
+
+        orders1.setUsers(user1);
+        orders1.setOrderDetailEntities(orderDetailList);
+        orders2.setUsers(user1);
+        orders2.setOrderDetailEntities(orderDetailList);
+        orders3.setUsers(user1);
+        orders3.setOrderDetailEntities(orderDetailList);
+
+        ordersList.add(orders1);
+        ordersList.add(orders2);
+        ordersList.add(orders3);
+
+        when(orderRepository.findOrdersByUserName("name1")).thenReturn(ordersList);
+        List<OrdersDTO> ordersDTOS = orderService.getOrderByUserName("name1");
+        assertEquals(3, ordersDTOS.size());
+    }
+
 
 
 

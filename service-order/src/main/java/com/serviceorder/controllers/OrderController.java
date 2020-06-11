@@ -46,12 +46,12 @@ public class OrderController {
         if (ordersDTO != null) {
             return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
         }
-        return ResponseEntity.notFound().build();
+        throw new ResourceNotFoundException("Can not find order by id "+ orderId);
     }
 
 
     @PutMapping("/orders/{id}")
-    public ResponseEntity<Object> changeOrderStatus(@PathVariable("id") int orderId) {
+    public ResponseEntity<Object> changeOrderStatus(@PathVariable("id") int orderId) throws ResourceNotFoundException {
         OrdersDTO ordersDTO = orderService.changeOrderStatus(orderId);
         if (ordersDTO != null) {
             return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
@@ -60,11 +60,11 @@ public class OrderController {
     }
 
 
-    @GetMapping("/orders/{usernmae}/username")
-    public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("usernmae") String usernmae) throws ResourceNotFoundException {
-        OrdersDTO ordersDTO = orderService.getOrderByUserName(usernmae);
-        if (ordersDTO != null) {
-            return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
+    @GetMapping("/orders/username/{username}")
+    public ResponseEntity<List<OrdersDTO>> getOrderByName(@PathVariable("username") String username) throws ResourceNotFoundException {
+        List<OrdersDTO> ordersDTOList = orderService.getOrderByUserName(username);
+        if (ordersDTOList != null) {
+            return new ResponseEntity<>(ordersDTOList, HttpStatus.OK);
         }
         return ResponseEntity.notFound().build();
     }
