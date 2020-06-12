@@ -36,8 +36,24 @@ public class PaymentController {
     @Autowired
     private UserDetailServiceImpl userDetailsService;
 
-    @GetMapping(value = "/payments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> payment(HttpServletRequest request, @RequestBody LoginRequest loginRequest) throws Exception {
+    @GetMapping(value = "/payments/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> payment(HttpServletRequest request, @PathVariable("username") String username) throws Exception {
+
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null) {
+            String paymentInfo = restService.execute(new StringBuilder(urlOrder)
+                            .append("/orders/").append("username/").append(username).toString(),
+                    HttpMethod.GET, null, null, new ParameterizedTypeReference<String>() {
+                    }, null).getBody();
+
+            return ResponseEntity.ok(paymentInfo);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/lognin", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> lognin(@RequestBody LoginRequest loginRequest) throws Exception {
 
         String authToken = restService.execute(new StringBuilder(urlAuthentication).append("/auth/signin").toString(),
                 HttpMethod.POST, null, loginRequest, new ParameterizedTypeReference<String>() {
@@ -45,16 +61,11 @@ public class PaymentController {
 
 //        String authToken = jwtTokenUtil.getJwtTokenFromSecurityContext();
         HttpHeaders header = new HttpHeaders();
-        header.setBearerAuth(authToken);
+        header.setBearerAuth("Bearer " + authToken);
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null) {
-            String paymentInfo = restService.execute(new StringBuilder(urlOrder)
-                            .append("/orders/").append(loginRequest.getUsername()).append("/username").toString(),
-                    HttpMethod.GET, header, null, new ParameterizedTypeReference<String>() {
-                    }, null).getBody();
+        if (authToken != null) {
 
-            return ResponseEntity.ok(paymentInfo);
+            return ResponseEntity.ok("Bearer " + authToken);
         }
         return ResponseEntity.noContent().build();
     }
