@@ -1,8 +1,8 @@
 package com.serviceorder.controllers;
 
-import com.serviceorder.services.OrderService;
 import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.exceptions.ResourceNotFoundException;
+import com.serviceorder.services.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +39,13 @@ public class OrderController {
     }
 
 
-
     @GetMapping("/orders/{id}")
     public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("id") int orderId) throws ResourceNotFoundException {
         OrdersDTO ordersDTO = orderService.getOrderByID(orderId);
         if (ordersDTO != null) {
             return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
         }
-        throw new ResourceNotFoundException("Can not find order by id "+ orderId);
+        throw new ResourceNotFoundException("Can not find order by id " + orderId);
     }
 
 
@@ -69,14 +68,13 @@ public class OrderController {
         return ResponseEntity.notFound().build();
     }
 
-        @PostMapping("/orders")
-        public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO){
-            OrdersDTO orderCreated = orderService.createOrder(ordersDTO);
-            if (orderCreated != null) {
-                return new ResponseEntity<>(ordersDTO, HttpStatus.CREATED);
-            }
-            return ResponseEntity.badRequest().build();
-
+    @PostMapping("/orders")
+    public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO) {
+        OrdersDTO orderCreated = orderService.createOrder(ordersDTO);
+        if (orderCreated != null) {
+            return new ResponseEntity<>(ordersDTO, HttpStatus.CREATED);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 }

@@ -33,7 +33,7 @@ public class LoggingAspect
     public Object aroundServiceMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return proceedingJoinPoint.proceed();
     }
-    
+
     @AfterThrowing (pointcut = "service()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
     	CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();

@@ -3,6 +3,7 @@ package com.serviceorder.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceorder.controllers.ProductController;
 import com.serviceorder.entities.Product;
+import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
 import com.serviceorder.dto.ProductDTO;
@@ -59,9 +60,9 @@ public class ProductControllerTest {
     @DisplayName("Test findAll()")
     public void test_get_all_product_success() throws Exception {
         List<ProductDTO> productList = Arrays.asList(
-                new ProductDTO(1,"tao1","anh1","mota1",1),
-                new ProductDTO(2,"tao2","anh2","mota2",1),
-                new ProductDTO(3,"tao3","anh3","mota3",0));
+                new ProductDTO(1, "tao1", "anh1", "mota1", 1),
+                new ProductDTO(2, "tao2", "anh2", "mota2", 1),
+                new ProductDTO(3, "tao3", "anh3", "mota3", 0));
 
         when(productService.findAllProduct()).thenReturn(Optional.of(productList));
 
@@ -90,7 +91,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_get_product_by_id_success() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
+        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
 
         when(productService.getProductById(anyInt())).thenReturn(Optional.of(productDTO));
 
@@ -121,7 +122,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_create_product_success() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
+        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
 
         when(productService.checkExist(productDTO)).thenReturn(false);
         when(productService.createProduct(any(ProductDTO.class))).thenReturn(Optional.of(productDTO));
@@ -136,11 +137,11 @@ public class ProductControllerTest {
 
     @Test
     public void test_create_product_fail_409_conflict() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
+        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
 
         when(productService.checkExist(productDTO)).thenReturn(true);
-
         mockMvc.perform(
+
                 post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productDTO)))
@@ -152,13 +153,12 @@ public class ProductControllerTest {
 
     @Test
     public void test_update_product_success() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
+        ProductDTO productDTO = new ProductDTO(1, "tao", "anh", "mota", 1);
 
         when(productService.updateProduct(1, productDTO)).thenReturn(Optional.of(productDTO));
-        mockMvc.perform(
-                put("/api/products/{id}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(productDTO)))
+        mockMvc.perform(put("/api/products/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(productDTO)))
                 .andExpect(status().isOk());
         verify(productService, times(1)).updateProduct(1, productDTO);
         verifyNoMoreInteractions(productService);
@@ -166,11 +166,11 @@ public class ProductControllerTest {
 
     @Test
     public void test_update_product_fail_404_not_found() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
-        when(productService.getProductById(anyInt())).thenReturn(Optional.empty());
-        mockMvc.perform(put("/api/products/{id}", productDTO.getProductId()));
+        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
+        when(productService.updateProduct(anyInt(), any(ProductDTO.class))).thenThrow(ResourceNotFoundException.class);
+        mockMvc.perform(put("/api/products/{id}", productDTO.getProductId()))
+                .andExpect(status().isBadRequest());
 
-        verifyNoMoreInteractions(productService);
     }
 
     @Test
@@ -193,7 +193,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_delete_product_fail_404_not_found() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1,"tao1","anh1","mota1",1);
+        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
 
         when(productRepository.findById(anyInt())).thenReturn(Optional.empty());
 

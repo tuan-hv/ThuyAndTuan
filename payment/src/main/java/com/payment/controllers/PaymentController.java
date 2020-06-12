@@ -48,7 +48,7 @@ public class PaymentController {
         header.setBearerAuth(authToken);
 
         String authHeader = request.getHeader("Authorization");
-        if (authHeader.length() > 20) {
+        if (authHeader != null) {
             String paymentInfo = restService.execute(new StringBuilder(urlOrder)
                             .append("/orders/").append(loginRequest.getUsername()).append("/username").toString(),
                     HttpMethod.GET, header, null, new ParameterizedTypeReference<String>() {

@@ -51,7 +51,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+
     public ResponseEntity<ProductDTO> getProductById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
 
@@ -74,10 +74,10 @@ public class ProductController {
 
     @PutMapping("/products/{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable(value = "id") Integer productId,
-                                                    @Valid @RequestBody ProductDTO companyDTO) throws ResourceNotFoundException {
+                                                    @Valid @RequestBody ProductDTO productDTO) throws ResourceNotFoundException {
 
-        LOGGER.info("starting save product...");
-        ProductDTO updateCompany = productService.updateProduct(productId, companyDTO)
+        LOGGER.info("starting update product...");
+        ProductDTO updateCompany = productService.updateProduct(productId, productDTO)
                 .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
         return ResponseEntity.ok(updateCompany);
     }
