@@ -52,8 +52,8 @@ public class PaymentController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value = "/lognin", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> lognin(@RequestBody LoginRequest loginRequest) throws Exception {
+    @PostMapping(value = "/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) throws Exception {
 
         String authToken = restService.execute(new StringBuilder(urlAuthentication).append("/auth/signin").toString(),
                 HttpMethod.POST, null, loginRequest, new ParameterizedTypeReference<String>() {
