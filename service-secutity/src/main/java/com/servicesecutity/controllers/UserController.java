@@ -5,6 +5,7 @@ import dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class UserController {
 
 
 	@GetMapping("user/{username}")
+	//@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<UserDTO> findByUsername(@PathVariable("username") String username) {
 		UserDTO userDTO = userService.findByUsername(username);
 		return new ResponseEntity<>(userDTO, HttpStatus.OK);
