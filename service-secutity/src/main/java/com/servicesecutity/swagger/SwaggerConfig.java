@@ -1,4 +1,4 @@
-package com.serviceorder.swagger;
+package com.servicesecutity.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,11 +20,6 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static springfox.documentation.builders.PathSelectors.regex;
 
-/**
- * @Create by: tuan den
- * @date:4/6/2020
- */
-
 @Configuration
 @EnableSwagger2
 class SwaggerConfig {
@@ -43,7 +38,7 @@ class SwaggerConfig {
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.serviceorder.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("com.servicesecutity.controllers"))
                 .paths(regex(".*/" + restAPI + ".*"))
                 .build()
                 .apiInfo(restAPIInfo).globalOperationParameters(aParameters);
