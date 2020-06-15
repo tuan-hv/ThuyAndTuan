@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
@@ -127,8 +128,7 @@ public class ProductControllerTest {
 
         when(productService.checkExist(productDTO)).thenReturn(false);
         when(productService.createProduct(any(ProductDTO.class))).thenReturn(Optional.of(productDTO));
-
-
+        
         mockMvc.perform(
                 post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,6 +141,7 @@ public class ProductControllerTest {
         ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
 
         when(productService.checkExist(productDTO)).thenThrow(FileDuplicateException.class);
+        assertThatThrownBy(() -> productService.checkExist(productDTO)).isInstanceOf(FileDuplicateException.class);
 
     }
 
@@ -156,9 +157,10 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void test_update_product_fail_404_not_found() throws Exception {
+    public void test_update_product_fail_404_not_found() {
         when(productService.updateProduct(anyInt(), any(ProductDTO.class))).thenThrow(ResourceNotFoundException.class);
 
+        assertThatThrownBy(() -> productService.updateProduct(anyInt(), any(ProductDTO.class))).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
