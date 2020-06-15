@@ -3,6 +3,7 @@ package com.serviceorder.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceorder.controllers.ProductController;
 import com.serviceorder.entities.Product;
+import com.serviceorder.exceptions.FileDuplicateException;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
@@ -139,37 +140,24 @@ public class ProductControllerTest {
     public void test_create_product_fail_409_conflict() throws Exception {
         ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
 
-        when(productService.checkExist(productDTO)).thenReturn(true);
-        mockMvc.perform(
+        when(productService.checkExist(productDTO)).thenThrow(FileDuplicateException.class);
 
-                post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(productDTO)))
-                .andExpect(status().isConflict());
-
-        verify(productService, times(1)).checkExist(productDTO);
-        verifyNoMoreInteractions(productService);
     }
 
     @Test
     public void test_update_product_success() throws Exception {
         ProductDTO productDTO = new ProductDTO(1, "tao", "anh", "mota", 1);
 
-        when(productService.updateProduct(1, productDTO)).thenReturn(Optional.of(productDTO));
+        when(productService.updateProduct(anyInt(), any(ProductDTO.class))).thenReturn(Optional.of(productDTO));
         mockMvc.perform(put("/api/products/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(productDTO)))
                 .andExpect(status().isOk());
-        verify(productService, times(1)).updateProduct(1, productDTO);
-        verifyNoMoreInteractions(productService);
     }
 
     @Test
     public void test_update_product_fail_404_not_found() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
         when(productService.updateProduct(anyInt(), any(ProductDTO.class))).thenThrow(ResourceNotFoundException.class);
-        mockMvc.perform(put("/api/products/{id}", productDTO.getProductId()))
-                .andExpect(status().isBadRequest());
 
     }
 
