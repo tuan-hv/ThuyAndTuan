@@ -203,7 +203,7 @@ public class OrderControllerTest {
                 new OrdersDTO(3, 123, new ArrayList<>(), userDTO));
 
         when(orderService.getOrderByUserName("name")).thenReturn(ordersDTOList);
-        mockMvc.perform(get("/api/orders/username/{username}", "name"))
+        mockMvc.perform(get("/api/orders/getorderbyusername/{username}", "name"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(3)))

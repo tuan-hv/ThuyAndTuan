@@ -16,6 +16,7 @@ import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.serviceorder.utils.Constant.*;
 
 /**
  * @Created by: Thuy xinh
@@ -131,7 +134,6 @@ public class OrderService {
 
 
     public OrdersDTO createOrder(OrdersDTO ordersDTO) {
-        try {
             Orders orders = OrderConvert.convertOrderDTOToOrder(ordersDTO);
             Orders orderCreate = orderRepository.save(orders);
             UserDTO userDTO = ordersDTO.getUserDTO();
@@ -140,30 +142,20 @@ public class OrderService {
             List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderdetailDTOS();
             orderDetailDTOList.forEach(o -> {
                 OrderDetail orderDetail = OrderDetailConvert.convertOrderDetailDTOToOrderDetail(o);
-                Product product = null;
-                try {
-                    product = productRepository.findById(o.getProductDTO().getProductId()).orElseThrow(() -> new ResourceNotFoundException(" product not found"));
-                } catch (ResourceNotFoundException e) {
-                    LOGGER.info("product not found");
-                    e.getMessage();
+                Optional<Product> product = productRepository.findById(o.getProductDTO().getProductId());
+                if(product.isPresent()){
+                    orderDetail.setProduct(product.get());
+                    orderDetail.setPrice(product.get().getPrice() * orderDetail.getQuantity());
+                    orderDetailsList.add(orderDetail);
+                    orders.setOrderDetails(orderDetailsList);
+                    orders.setUsers(users);
+                    orderDetail.setOrders(orders);
+                    orderDetailRepository.save(orderDetail);
                 }
-                orderDetail.setProduct(product);
-                orderDetail.setPrice(product.getPrice() * orderDetail.getQuantity());
-                orderDetailsList.add(orderDetail);
-                orders.setOrderDetails(orderDetailsList);
-                orders.setUsers(users);
-                orderDetail.setOrders(orders);
-                orderDetailRepository.save(orderDetail);
-
             });
             ordersDTO.setOrdersId(orderCreate.getOrderId());
             LOGGER.info("create order successfully!");
             return ordersDTO;
-        } catch (Exception e) {
-            LOGGER.error("Error when creating order!");
-            return null;
-        }
-
     }
 
 
@@ -174,16 +166,16 @@ public class OrderService {
             ordersDTO = OrderConvert.convertOrdertoToOrderDTO(orders.get());
             switch (orders.get().getStatus()){
               case 0:
-                  orders.get().setStatus(1);
+                  orders.get().setStatus(ORDER_PROCESSING);
                   break;
               case 1:
-                  orders.get().setStatus(2);
+                  orders.get().setStatus(ORDER_SUCCESS);
                   break;
               case 2:
-                  orders.get().setStatus(3);
+                  orders.get().setStatus(ORDER_CANCLED);
                   break;
               default:
-                  orders.get().setStatus(0);
+                  orders.get().setStatus(ORDER_CONFIRM);
                   break;
           }
             orderRepository.save(orders.get());

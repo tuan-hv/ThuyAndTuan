@@ -59,7 +59,7 @@ public class OrderController {
     }
 
 
-    @GetMapping("/orders/username/{username}")
+    @GetMapping("/orders/getorderbyusername/{username}")
     public ResponseEntity<List<OrdersDTO>> getOrderByUserName(@PathVariable("username") String username) throws ResourceNotFoundException {
         List<OrdersDTO> ordersDTOList = orderService.getOrderByUserName(username);
         if (ordersDTOList != null) {

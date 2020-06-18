@@ -1,5 +1,6 @@
 package com.serviceorder.service;
 
+import com.serviceorder.converts.OrderConvert;
 import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
@@ -7,7 +8,9 @@ import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.dto.UserDTO;
 import com.serviceorder.entities.OrderDetail;
 import com.serviceorder.entities.Orders;
+import com.serviceorder.entities.Product;
 import com.serviceorder.entities.Users;
+import com.serviceorder.exceptions.FileDuplicateException;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
@@ -72,6 +75,14 @@ public class OrderServiceTest {
         Orders orders2 = new Orders();
         Orders orders3 = new Orders();
 
+        OrderDetail orderDetail1 = new OrderDetail();
+        orderDetail1.setProduct(new Product());
+        OrderDetail orderDetail2 = new OrderDetail();
+        orderDetail2.setProduct(new Product());
+
+        orderDetailList.add(orderDetail1);
+        orderDetailList.add(orderDetail2);
+
         orders1.setUsers(user1);
         orders1.setOrderDetails(orderDetailList);
         orders2.setUsers(user2);
@@ -98,6 +109,10 @@ public class OrderServiceTest {
     @Test
     public void getOrderById() throws ResourceNotFoundException {
         List<OrderDetail> orderDetailList = new ArrayList<>();
+        OrderDetail orderDetail1 = new OrderDetail();
+        orderDetail1.setProduct(new Product());
+        orderDetailList.add(orderDetail1);
+
         Orders orders = new Orders();
         orders.setOrderId(1);
         orders.setTotalPrice(120.0);
@@ -130,12 +145,18 @@ public class OrderServiceTest {
         orders.setStatus(0);
         orders.setOrderDetails(orderDetailList);
 
-        when(orderRepository.findById(1)).thenReturn(Optional.of(orders));
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.of(orders));
 
         OrdersDTO ordersDTO = orderService.changeOrderStatus(1);
         assertEquals(1, ordersDTO.getStatus());
         assertEquals(1, ordersDTO.getOrdersId());
 
+    }
+
+    @Test
+    public void changeOrderStatusThrowException(){
+        when(orderRepository.findById(anyInt())).thenThrow(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(anyInt())).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -181,13 +202,36 @@ public class OrderServiceTest {
         assertEquals(1, createOrder.getOrdersId());
     }
 
-    @Test
-    public void addOrderFail(){
-        OrdersDTO ordersDTO = new OrdersDTO();
-        when(orderRepository.save(any(Orders.class))).thenThrow(Exception.class);
-        OrdersDTO createOrderDTO = orderService.createOrder(ordersDTO);
-        assertEquals(null, createOrderDTO);
-    }
+//    @Test
+//    public void addOrderFail(){
+//        List<OrderdetailDTO> orderDetailDTOList = new ArrayList<>();
+//        OrderdetailDTO orderDetailDTO = new OrderdetailDTO();
+//        orderDetailDTO.setAmount(1);
+//        orderDetailDTO.setStatus(1);
+//
+//        ProductDTO productDTO = new ProductDTO();
+//        productDTO.setProductId(1);
+//        productDTO.setDescription("abc");
+//        productDTO.setImage("image");
+//        productDTO.setProductName("name");
+//        orderDetailDTO.setProductDTO(productDTO);
+//        orderDetailDTO.setPrice(productDTO.getPrice() * orderDetailDTO.getAmount());
+//        orderDetailDTOList.add(orderDetailDTO);
+//
+//        OrdersDTO ordersDTO = new OrdersDTO();
+//        ordersDTO.setTotalPrice(123.0);
+//        ordersDTO.setStatus(0);
+//        ordersDTO.setOrderdetailDTOS(orderDetailDTOList);
+//        ordersDTO.setUserDTO(new UserDTO());
+//
+//        when(orderRepository.save(any(Orders.class))).thenReturn(OrderConvert.convertOrderDTOToOrder(ordersDTO));
+//        when(productRepository.findById(anyInt())).thenReturn(Optional.of(new Product()));
+//        when(orderDetailRepository.save(any())).thenReturn(orderDetailDTO);
+//        //OrdersDTO createOrderDTO = orderService.createOrder(ordersDTO);
+//        assertThatThrownBy(() -> orderService.createOrder(any(OrdersDTO.class))).isInstanceOf(RuntimeException.class);
+//
+//        //  assertEquals(RuntimeException.class, createOrderDTO);
+//    }
 
     @Test
     public void getOrderByUsername() throws ResourceNotFoundException {
@@ -199,6 +243,14 @@ public class OrderServiceTest {
         Orders orders1 = new Orders();
         Orders orders2 = new Orders();
         Orders orders3 = new Orders();
+
+        OrderDetail orderDetail1 = new OrderDetail();
+        orderDetail1.setProduct(new Product());
+        OrderDetail orderDetail2 = new OrderDetail();
+        orderDetail2.setProduct(new Product());
+
+        orderDetailList.add(orderDetail1);
+        orderDetailList.add(orderDetail2);
 
         orders1.setUsers(user1);
         orders1.setOrderDetails(orderDetailList);
@@ -217,6 +269,11 @@ public class OrderServiceTest {
     }
 
 
+    @Test
+    public void getOrderByUsernameThrowException() {
+        when(orderRepository.findOrdersByUserName(anyString())).thenReturn(new ArrayList<>()).thenThrow(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> orderService.getOrderByUserName(anyString())).isInstanceOf(ResourceNotFoundException.class);
+    }
 
 
 }
