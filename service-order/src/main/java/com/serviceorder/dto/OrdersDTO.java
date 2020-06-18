@@ -12,7 +12,7 @@ public class OrdersDTO extends AbstractDTO {
     private int ordersId;
     private double totalPrice;
 
-    private List<OrderdetailDTO> orderDetailEntities;
+    private List<OrderdetailDTO> orderdetailDTOS;
 
     private UserDTO userDTO;
 }

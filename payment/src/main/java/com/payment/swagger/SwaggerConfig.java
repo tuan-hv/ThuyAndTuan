@@ -24,12 +24,11 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 class SwaggerConfig {
 
-    private static final String restAPI = "api";
+    private static final String REST_PAI = "api";
     
     @Bean
     public Docket api() {
-        ApiInfo restAPIInfo = buildApiInfo(restAPI);
-        List<ResponseMessage> resp = buildGlobalResponses();
+        ApiInfo restAPIInfo = buildApiInfo(REST_PAI);
 
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.name("Authorization").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
@@ -39,7 +38,7 @@ class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.payment.controllers"))
-                .paths(regex(".*/" + restAPI + ".*"))
+                .paths(regex(".*/" + REST_PAI + ".*"))
                 .build()
                 .apiInfo(restAPIInfo).globalOperationParameters(aParameters);
     }

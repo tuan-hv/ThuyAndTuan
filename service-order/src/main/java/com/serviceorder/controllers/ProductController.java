@@ -1,18 +1,20 @@
 package com.serviceorder.controllers;
 
 import com.serviceorder.converts.ProductConvert;
-import com.serviceorder.repositories.ProductRepository;
-import com.serviceorder.entities.Product;
-import com.serviceorder.services.ProductService;
-import com.serviceorder.utils.Constant;
 import com.serviceorder.dto.ProductDTO;
+import com.serviceorder.entities.Product;
 import com.serviceorder.exceptions.FileDuplicateException;
 import com.serviceorder.exceptions.ResourceNotFoundException;
+import com.serviceorder.repositories.ProductRepository;
+import com.serviceorder.services.ProductService;
+import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,12 +52,15 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @Retryable(
+            value = {ResourceNotFoundException.class},
+            backoff = @Backoff(delay = 10000L)
+    )
     @GetMapping("/products/{id}")
-
     public ResponseEntity<ProductDTO> getProductById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
 
-        LOGGER.info("Find by id product :: " , productId);
+        LOGGER.info("Find by id product :: {}" , productId);
         ProductDTO companyDTO = productService.getProductById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
         LOGGER.info("Find by id product success!");
@@ -69,7 +74,9 @@ public class ProductController {
             throw new FileDuplicateException("Product is already exist!");
         LOGGER.info("starting save product...");
         Optional<ProductDTO> createCompany = productService.createProduct(productDTO);
-        return ResponseEntity.ok().body(createCompany.get());
+        return createCompany.isPresent()
+                ? ResponseEntity.ok().body(createCompany.get())
+                : ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/products/{id}")
@@ -91,6 +98,11 @@ public class ProductController {
         productRepository.delete(product);
         LOGGER.info("delete product success!");
         return ResponseEntity.ok(ProductConvert.convertProductToProductDto(product));
+    }
+
+    @Recover
+    public void recover() {
+        LOGGER.info("Recovering");
     }
 
 }

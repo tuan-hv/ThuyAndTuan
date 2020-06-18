@@ -8,8 +8,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
 @Service
 public class RestService {
 
@@ -19,7 +17,7 @@ public class RestService {
     private RestTemplate restTemplate;
 
     public <T> ResponseEntity<T> execute(String url, HttpMethod method, HttpHeaders headers,
-                                         Object body, ParameterizedTypeReference<T> type, Map<String, Object> values) throws Exception{
+                                         Object body, ParameterizedTypeReference<T> type) throws Exception{
         try {
             HttpEntity<Object> entity = new HttpEntity<>(body, headers);
             ResponseEntity<T> response = restTemplate.exchange(
@@ -31,7 +29,7 @@ public class RestService {
                     && response.getStatusCodeValue() < HttpStatus.MULTIPLE_CHOICES.value()) {
                 return response;
             }
-            logger.info("Can't get data from API - {}");
+            logger.info("Can't get data from API ");
         } catch (Exception e) {
             logger.info("Some error has occur when call API - {}", e.getMessage());
             throw new Exception(e.getMessage(), e);

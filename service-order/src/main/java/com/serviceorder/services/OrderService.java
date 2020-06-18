@@ -4,25 +4,23 @@ import com.serviceorder.converts.OrderConvert;
 import com.serviceorder.converts.OrderDetailConvert;
 import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.converts.UsersConvert;
+import com.serviceorder.dto.OrderdetailDTO;
+import com.serviceorder.dto.OrdersDTO;
+import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.dto.UserDTO;
+import com.serviceorder.entities.OrderDetail;
+import com.serviceorder.entities.Orders;
 import com.serviceorder.entities.Product;
 import com.serviceorder.entities.Users;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
-import com.serviceorder.entities.OrderDetail;
-import com.serviceorder.entities.Orders;
-import com.serviceorder.dto.OrderdetailDTO;
-import com.serviceorder.dto.OrdersDTO;
-import com.serviceorder.dto.ProductDTO;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +53,7 @@ public class OrderService {
             LOGGER.info("get all Orders success!");
             ordersList.forEach(order -> {
                 List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
-                List<OrderDetail> orderdetailList = order.getOrderDetailEntities();
+                List<OrderDetail> orderdetailList = order.getOrderDetails();
                 Users users = order.getUsers();
                 OrdersDTO ordersDTO = OrderConvert.convertOrdertoToOrderDTO(order);
                 UserDTO userDTO = UsersConvert.convertUserToUserDTO(users);
@@ -66,7 +64,7 @@ public class OrderService {
                     orderdetailDTO.setProductDTO(productDTO);
                     orderdetailDTOList.add(orderdetailDTO);
                 });
-                ordersDTO.setOrderDetailEntities(orderdetailDTOList);
+                ordersDTO.setOrderdetailDTOS(orderdetailDTOList);
                 ordersDTO.setUserDTO(userDTO);
                 ordersDTOList.add(ordersDTO);
             });
@@ -76,12 +74,12 @@ public class OrderService {
         return new ArrayList<>();
     }
 
-    public OrdersDTO getOrderByID(int orderID){
+    public OrdersDTO getOrderByID(int orderID)  {
         Optional<Orders> orders = orderRepository.findById(orderID);
         OrdersDTO ordersDTO;
         if(orders.isPresent()){
             List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
-            List<OrderDetail> orderdetailList = orders.get().getOrderDetailEntities();
+            List<OrderDetail> orderdetailList = orders.get().getOrderDetails();
             Users users = orders.get().getUsers();
             UserDTO userDTO = UsersConvert.convertUserToUserDTO(users);
             ordersDTO = OrderConvert.convertOrdertoToOrderDTO(orders.get());
@@ -93,7 +91,7 @@ public class OrderService {
                 orderdetailDTOList.add(orderdetailDTO);
             });
             ordersDTO.setUserDTO(userDTO);
-            ordersDTO.setOrderDetailEntities(orderdetailDTOList);
+            ordersDTO.setOrderdetailDTOS(orderdetailDTOList);
             LOGGER.info("get Orders by id successfully");
             return ordersDTO;
         }else {
@@ -109,7 +107,7 @@ public class OrderService {
             LOGGER.info("get Orders by name success!");
             ordersList.forEach(order -> {
                 List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
-                List<OrderDetail> orderdetailList = order.getOrderDetailEntities();
+                List<OrderDetail> orderdetailList = order.getOrderDetails();
                 Users users = order.getUsers();
                 OrdersDTO ordersDTO = OrderConvert.convertOrdertoToOrderDTO(order);
                 UserDTO userDTO = UsersConvert.convertUserToUserDTO(users);
@@ -120,7 +118,7 @@ public class OrderService {
                     orderdetailDTO.setProductDTO(productDTO);
                     orderdetailDTOList.add(orderdetailDTO);
                 });
-                ordersDTO.setOrderDetailEntities(orderdetailDTOList);
+                ordersDTO.setOrderdetailDTOS(orderdetailDTOList);
                 ordersDTO.setUserDTO(userDTO);
                 ordersDTOList.add(ordersDTO);
             });
@@ -139,7 +137,7 @@ public class OrderService {
             UserDTO userDTO = ordersDTO.getUserDTO();
             Users users = UsersConvert.convertUserDTOToUser(userDTO);
             List<OrderDetail> orderDetailsList = new ArrayList<>();
-            List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderDetailEntities();
+            List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderdetailDTOS();
             orderDetailDTOList.forEach(o -> {
                 OrderDetail orderDetail = OrderDetailConvert.convertOrderDetailDTOToOrderDetail(o);
                 Product product = null;
@@ -147,12 +145,12 @@ public class OrderService {
                     product = productRepository.findById(o.getProductDTO().getProductId()).orElseThrow(() -> new ResourceNotFoundException(" product not found"));
                 } catch (ResourceNotFoundException e) {
                     LOGGER.info("product not found");
-                    e.printStackTrace();
+                    e.getMessage();
                 }
                 orderDetail.setProduct(product);
                 orderDetail.setPrice(product.getPrice() * orderDetail.getQuantity());
                 orderDetailsList.add(orderDetail);
-                orders.setOrderDetailEntities(orderDetailsList);
+                orders.setOrderDetails(orderDetailsList);
                 orders.setUsers(users);
                 orderDetail.setOrders(orders);
                 orderDetailRepository.save(orderDetail);

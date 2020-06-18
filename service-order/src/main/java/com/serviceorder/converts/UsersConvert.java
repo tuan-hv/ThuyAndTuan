@@ -1,13 +1,7 @@
 package com.serviceorder.converts;
 
-import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.dto.UserDTO;
-import com.serviceorder.entities.OrderDetail;
-import com.serviceorder.entities.Orders;
 import com.serviceorder.entities.Users;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ThuyAndTuan
@@ -18,17 +12,15 @@ import java.util.List;
  * @since 11/06/2020
  */
 public class UsersConvert {
+
+    private UsersConvert() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static UserDTO convertUserToUserDTO(Users users){
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(users.getUserId());
         userDTO.setUserName(users.getUserName());
-
-//        List<Orders> ordersList = users.getOrders();
-//        List<OrdersDTO> ordersDTOList = new ArrayList<>();
-//        ordersList.forEach(o -> {
-//            OrdersDTO ordersDTO = OrderConvert.convertOrdertoToOrderDTO(o);
-//            ordersDTOList.add(ordersDTO);
-//        });
 
         return userDTO;
     }

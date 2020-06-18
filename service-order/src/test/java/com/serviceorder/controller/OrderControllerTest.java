@@ -83,13 +83,13 @@ public class OrderControllerTest {
                 new OrdersDTO(3, 123, orderdetailDTOList3, null));
 
         when(orderService.getAllOrders()).thenReturn(ordersDTOList);
-            mockMvc.perform(get("/api/orders"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$", hasSize(3)))
-                    .andExpect(jsonPath("$[0].ordersId", is(1)))
-                    .andExpect(jsonPath("$[1].ordersId", is(2)))
-                    .andExpect(jsonPath("$[2].ordersId", is(3)));
+        mockMvc.perform(get("/api/orders"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].ordersId", is(1)))
+                .andExpect(jsonPath("$[1].ordersId", is(2)))
+                .andExpect(jsonPath("$[2].ordersId", is(3)));
 
     }
 
@@ -129,7 +129,7 @@ public class OrderControllerTest {
         orderDTO.setOrdersId(1);
         orderDTO.setTotalPrice(120.0);
         orderDTO.setStatus(1);
-        orderDTO.setOrderDetailEntities(orderDetailList);
+        orderDTO.setOrderdetailDTOS(orderDetailList);
         when(orderService.changeOrderStatus(1)).thenReturn(orderDTO);
 
         mockMvc.perform(put("/api/orders/{id}", 1))
@@ -165,7 +165,7 @@ public class OrderControllerTest {
         OrdersDTO ordersDTO = new OrdersDTO();
         ordersDTO.setTotalPrice(123.0);
         ordersDTO.setStatus(0);
-        ordersDTO.setOrderDetailEntities(null);
+        ordersDTO.setOrderdetailDTOS(null);
 
         when(orderService.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(ordersDTO);
         mockMvc.perform(
@@ -182,7 +182,7 @@ public class OrderControllerTest {
         OrdersDTO ordersDTO = new OrdersDTO();
         ordersDTO.setTotalPrice(123.0);
         ordersDTO.setStatus(0);
-        ordersDTO.setOrderDetailEntities(null);
+        ordersDTO.setOrderdetailDTOS(null);
         when(orderService.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(null);
         mockMvc.perform(
                 post("/api/orders")
@@ -203,14 +203,14 @@ public class OrderControllerTest {
                 new OrdersDTO(3, 123, new ArrayList<>(), userDTO));
 
         when(orderService.getOrderByUserName("name")).thenReturn(ordersDTOList);
-            mockMvc.perform(get("/api/orders/username/{username}", "name"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$", hasSize(3)))
-                    .andExpect(jsonPath("$[0].ordersId", is(1)))
-                    .andExpect(jsonPath("$[1].ordersId", is(2)))
-                    .andExpect(jsonPath("$[2].ordersId", is(3)));
-        }
+        mockMvc.perform(get("/api/orders/username/{username}", "name"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].ordersId", is(1)))
+                .andExpect(jsonPath("$[1].ordersId", is(2)))
+                .andExpect(jsonPath("$[2].ordersId", is(3)));
+    }
 
     @Test
     public void testGetOrdersByNameFail() throws Exception {
@@ -220,7 +220,7 @@ public class OrderControllerTest {
     }
 
 
-    }
+}
 
 
 

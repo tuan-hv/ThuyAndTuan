@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidatorContext;
 public class ContactPriceValidator implements ConstraintValidator<ContactPriceConstraint, Double> {
     @Override
     public void initialize(ContactPriceConstraint constraintAnnotation) {
-
+        //todo
     }
 
     @Override

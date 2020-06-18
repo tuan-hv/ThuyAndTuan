@@ -27,6 +27,7 @@ public class LoggingAspect
 
     @Pointcut("within(com.serviceorder..*)")
     public void service() {
+    	//todo
     }
     
     @Around("service()")
