@@ -1,6 +1,9 @@
 package com.payment.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.payment.modals.LoginRequest;
+import com.payment.modals.Payment;
 import com.payment.services.RestService;
 import com.payment.services.UserDetailServiceImpl;
 import com.payment.utils.JWTUtil;
@@ -24,6 +27,8 @@ public class PaymentController {
     @Autowired
     private RestService restService;
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private JWTUtil jwtTokenUtil;
 
@@ -36,8 +41,8 @@ public class PaymentController {
     @Autowired
     private UserDetailServiceImpl userDetailsService;
 
-    @GetMapping(value = "/payments/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> payment(HttpServletRequest request, @PathVariable("username") String username) throws Exception {
+    @GetMapping(value = "/payments/totalmoney/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> paymentTotalMoney(HttpServletRequest request, @PathVariable("username") String username) throws Exception {
 
 
         String authHeader = request.getHeader("Authorization");
@@ -48,6 +53,27 @@ public class PaymentController {
                     }).getBody();
 
             return ResponseEntity.ok(paymentInfo);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/payments/{paymentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Payment> payment(HttpServletRequest request, @PathVariable("paymentId") String paymentId) throws Exception {
+
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null) {
+            String paymentInfo = restService.execute(new StringBuilder(urlOrder)
+                            .append("/orders/").append(paymentId).toString(),
+                    HttpMethod.GET, null, null, new ParameterizedTypeReference<String>() {
+                    }).getBody();
+
+            JsonNode jsonNode = objectMapper.readTree(paymentInfo);
+            Payment payment = new Payment();
+            String totalPrice = jsonNode.get("totalPrice").asText();
+            payment.setMoney(Double.valueOf(totalPrice));
+
+            return ResponseEntity.ok(payment);
         }
         return ResponseEntity.noContent().build();
     }
