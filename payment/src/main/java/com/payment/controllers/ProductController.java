@@ -45,7 +45,7 @@ public class ProductController {
             String productInfor = restService.execute(new StringBuilder(urlProduct)
                             .append("/products").toString(),
                     HttpMethod.POST, null, productDTO, new ParameterizedTypeReference<String>() {
-                    }, null).getBody();
+                    }).getBody();
 
             return ResponseEntity.ok(productInfor);
         }
@@ -60,7 +60,7 @@ public class ProductController {
             String productInfor = restService.execute(new StringBuilder(urlProduct)
                             .append("/products/").append(productId).toString(),
                     HttpMethod.PUT, null, productDTO, new ParameterizedTypeReference<String>() {
-                    }, null).getBody();
+                    }).getBody();
             return ResponseEntity.ok(productInfor);
         }
         return ResponseEntity.noContent().build();
