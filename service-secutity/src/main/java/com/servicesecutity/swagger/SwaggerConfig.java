@@ -29,7 +29,6 @@ class SwaggerConfig {
     @Bean
     public Docket api() {
         ApiInfo restAPIInfo = buildApiInfo(REST_API);
-        List<ResponseMessage> resp = buildGlobalResponses();
 
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.name("Authorization").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
@@ -44,7 +43,7 @@ class SwaggerConfig {
                 .apiInfo(restAPIInfo).globalOperationParameters(aParameters);
     }
 
-    private List<ResponseMessage> buildGlobalResponses() {
+    protected List<ResponseMessage> buildGlobalResponses() {
         return newArrayList(new ResponseMessageBuilder()
                 .code(500)
                 .message("Unexpected error during execution")
