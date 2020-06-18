@@ -44,7 +44,7 @@ public class UserController {
         String userInfo = restService.execute(new StringBuilder(urlAuthentication)
                         .append("/user/").append(username).toString(),
                 HttpMethod.GET, header, null, new ParameterizedTypeReference<String>() {
-                }, null).getBody();
+                }).getBody();
         return ResponseEntity.ok(userInfo);
     }
 
@@ -56,7 +56,7 @@ public class UserController {
         String userInfo = restService.execute(new StringBuilder(urlAuthentication)
                         .append("/role/").append(username).toString(),
                 HttpMethod.GET, header, null, new ParameterizedTypeReference<String>() {
-                }, null).getBody();
+                }).getBody();
         return ResponseEntity.ok(userInfo);
     }
 
