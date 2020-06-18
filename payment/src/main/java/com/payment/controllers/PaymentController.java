@@ -45,7 +45,7 @@ public class PaymentController {
             String paymentInfo = restService.execute(new StringBuilder(urlOrder)
                             .append("/orders/").append("username/").append(username).toString(),
                     HttpMethod.GET, null, null, new ParameterizedTypeReference<String>() {
-                    }, null).getBody();
+                    }).getBody();
 
             return ResponseEntity.ok(paymentInfo);
         }
@@ -57,7 +57,7 @@ public class PaymentController {
 
         String authToken = restService.execute(new StringBuilder(urlAuthentication).append("/auth/signin").toString(),
                 HttpMethod.POST, null, loginRequest, new ParameterizedTypeReference<String>() {
-                }, null).getBody();
+                }).getBody();
 
         HttpHeaders header = new HttpHeaders();
         header.setBearerAuth("Bearer " + authToken);
