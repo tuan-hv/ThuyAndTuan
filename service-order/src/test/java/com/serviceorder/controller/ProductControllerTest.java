@@ -139,10 +139,24 @@ public class ProductControllerTest {
     @Test
     public void test_create_product_fail_409_conflict() throws Exception {
         ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
+        when(productService.checkExist(any(ProductDTO.class))).thenReturn(true);
+        mockMvc.perform(
+                post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(productDTO)))
+                .andExpect(status().isConflict());
+    }
 
-        when(productService.checkExist(productDTO)).thenThrow(FileDuplicateException.class);
-        assertThatThrownBy(() -> productService.checkExist(productDTO)).isInstanceOf(FileDuplicateException.class);
-
+    @Test
+    public void test_create_product_fail_400_bad_request() throws Exception {
+        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
+        when(productService.checkExist(any(ProductDTO.class))).thenReturn(false);
+        when(productService.createProduct(any(ProductDTO.class))).thenReturn(Optional.empty());
+        mockMvc.perform(
+                post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(productDTO)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
