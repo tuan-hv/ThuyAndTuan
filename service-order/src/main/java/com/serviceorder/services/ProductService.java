@@ -1,9 +1,9 @@
 package com.serviceorder.services;
 
 import com.serviceorder.converts.ProductConvert;
-import com.serviceorder.repositories.ProductRepository;
-import com.serviceorder.entities.Product;
 import com.serviceorder.dto.ProductDTO;
+import com.serviceorder.entities.Product;
+import com.serviceorder.repositories.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,8 @@ public class ProductService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
 
+    private int retryCount = 0;
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -41,8 +43,8 @@ public class ProductService {
     }
 
     public Optional<ProductDTO> getProductById(Integer productId) {
+        LOGGER.info("Attempting at {} time(s)", ++retryCount);
         Optional<Product> product = productRepository.findById(productId);
-
 
         if (product.isPresent()) {
             LOGGER.info("get product by id success...");

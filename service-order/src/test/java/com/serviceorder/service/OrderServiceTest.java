@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -73,11 +73,11 @@ public class OrderServiceTest {
         Orders orders3 = new Orders();
 
         orders1.setUsers(user1);
-        orders1.setOrderDetailEntities(orderDetailList);
+        orders1.setOrderDetails(orderDetailList);
         orders2.setUsers(user2);
-        orders2.setOrderDetailEntities(orderDetailList);
+        orders2.setOrderDetails(orderDetailList);
         orders3.setUsers(user3);
-        orders3.setOrderDetailEntities(orderDetailList);
+        orders3.setOrderDetails(orderDetailList);
 
         ordersList.add(orders1);
         ordersList.add(orders2);
@@ -96,13 +96,13 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void getOrderById() {
+    public void getOrderById() throws ResourceNotFoundException {
         List<OrderDetail> orderDetailList = new ArrayList<>();
         Orders orders = new Orders();
         orders.setOrderId(1);
         orders.setTotalPrice(120.0);
         orders.setStatus(0);
-        orders.setOrderDetailEntities(orderDetailList);
+        orders.setOrderDetails(orderDetailList);
         orders.setUsers(new Users());
 
         when(orderRepository.findById(1)).thenReturn(Optional.of(orders));
@@ -114,7 +114,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void getOrderByIDFail() {
+    public void getOrderByIDFail() throws ResourceNotFoundException {
         when(orderRepository.findById(1)).thenReturn(Optional.empty());
 
         OrdersDTO ordersDTO = orderService.getOrderByID(1);
@@ -128,7 +128,7 @@ public class OrderServiceTest {
         orders.setOrderId(1);
         orders.setTotalPrice(120.0);
         orders.setStatus(0);
-        orders.setOrderDetailEntities(orderDetailList);
+        orders.setOrderDetails(orderDetailList);
 
         when(orderRepository.findById(1)).thenReturn(Optional.of(orders));
 
@@ -157,7 +157,7 @@ public class OrderServiceTest {
         OrdersDTO ordersDTO = new OrdersDTO();
         ordersDTO.setTotalPrice(123.0);
         ordersDTO.setStatus(0);
-        ordersDTO.setOrderDetailEntities(orderDetailDTOList);
+        ordersDTO.setOrderdetailDTOS(orderDetailDTOList);
         ordersDTO.setUserDTO(new UserDTO());
 
         when(productRepository.findById(1)).thenReturn(Optional.of(ProductConvert.convertProductDtoToProduct(productDTO)));
@@ -201,11 +201,11 @@ public class OrderServiceTest {
         Orders orders3 = new Orders();
 
         orders1.setUsers(user1);
-        orders1.setOrderDetailEntities(orderDetailList);
+        orders1.setOrderDetails(orderDetailList);
         orders2.setUsers(user1);
-        orders2.setOrderDetailEntities(orderDetailList);
+        orders2.setOrderDetails(orderDetailList);
         orders3.setUsers(user1);
-        orders3.setOrderDetailEntities(orderDetailList);
+        orders3.setOrderDetails(orderDetailList);
 
         ordersList.add(orders1);
         ordersList.add(orders2);
