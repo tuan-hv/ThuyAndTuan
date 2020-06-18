@@ -37,7 +37,7 @@ public class Orders implements Serializable {
     private int status;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orders")
-    private List<OrderDetail> orderDetailEntities;
+    private List<OrderDetail> orderDetails;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

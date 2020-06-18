@@ -33,13 +33,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	@Value("${api.authentication}")
 	private String urlAuthentication;
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 		try {
 			String password = request.getParameter("password");
 
 			String token = restService.execute(new StringBuilder(urlAuthentication).append("/auth/signin").toString(),
 					HttpMethod.POST, null, new LoginRequest(username, password), new ParameterizedTypeReference<String>() {
-					}, null).getBody();
+					}).getBody();
 			
 			HttpHeaders header = new HttpHeaders();
 			header.setBearerAuth(token);

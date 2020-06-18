@@ -5,6 +5,10 @@ import com.serviceorder.dto.ProductDTO;
 
 public class ProductConvert {
 
+    private ProductConvert() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static ProductDTO convertProductToProductDto(Product product){
         ProductDTO productDTO = new ProductDTO();
 

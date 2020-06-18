@@ -8,7 +8,6 @@ import com.servicesecutity.payload.SignupRequest;
 import com.servicesecutity.repositories.RoleRepository;
 import com.servicesecutity.repositories.UserRepository;
 import com.servicesecutity.security.JwtProvider;
-import com.servicesecutity.security.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

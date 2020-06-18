@@ -59,7 +59,6 @@ public class PaymentController {
                 HttpMethod.POST, null, loginRequest, new ParameterizedTypeReference<String>() {
                 }, null).getBody();
 
-//        String authToken = jwtTokenUtil.getJwtTokenFromSecurityContext();
         HttpHeaders header = new HttpHeaders();
         header.setBearerAuth("Bearer " + authToken);
 
@@ -72,8 +71,7 @@ public class PaymentController {
 
     @GetMapping("/authenticate")
     public Authentication authenticate(@RequestParam(name = "username") String username,
-                                       @RequestParam(name = "password") String password)
-            throws Exception {
+                                       @RequestParam(name = "password") String password) {
         UserDetails userDetail = userDetailsService.loadUserByUsername(username);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

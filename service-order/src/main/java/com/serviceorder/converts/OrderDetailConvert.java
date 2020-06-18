@@ -5,6 +5,10 @@ import com.serviceorder.dto.OrderdetailDTO;
 
 public class OrderDetailConvert {
 
+    private OrderDetailConvert() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static OrderdetailDTO convertOrderDetailToOrderDetailDTO(OrderDetail orderDetail){
         OrderdetailDTO orderdetailDTO = new OrderdetailDTO();
 
