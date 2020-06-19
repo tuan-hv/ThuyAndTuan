@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PriceConstraint {
 
-    String message() default "Invalid price number";
+    String message() default "{invalid.price}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
