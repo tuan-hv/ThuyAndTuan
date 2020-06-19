@@ -132,7 +132,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void changeOrderStatus() throws ResourceNotFoundException {
+    public void changeOrderStatus0() throws ResourceNotFoundException {
         List<OrderDetail> orderDetailList = new ArrayList<>();
         Orders orders = new Orders();
         orders.setOrderId(1);
@@ -149,8 +149,58 @@ public class OrderServiceTest {
     }
 
     @Test
+    public void changeOrderStatus1() throws ResourceNotFoundException {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        Orders orders = new Orders();
+        orders.setOrderId(1);
+        orders.setTotalPrice(120.0);
+        orders.setStatus(1);
+        orders.setOrderDetails(orderDetailList);
+
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.of(orders));
+
+        OrdersDTO ordersDTO = orderService.changeOrderStatus(1);
+        assertEquals(2, ordersDTO.getStatus());
+        assertEquals(1, ordersDTO.getOrdersId());
+
+    }
+
+    @Test
+    public void changeOrderStatus2() throws ResourceNotFoundException {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        Orders orders = new Orders();
+        orders.setOrderId(1);
+        orders.setTotalPrice(120.0);
+        orders.setStatus(2);
+        orders.setOrderDetails(orderDetailList);
+
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.of(orders));
+
+        OrdersDTO ordersDTO = orderService.changeOrderStatus(1);
+        assertEquals(3, ordersDTO.getStatus());
+        assertEquals(1, ordersDTO.getOrdersId());
+
+    }
+
+    @Test
+    public void changeOrderStatusDefault() throws ResourceNotFoundException {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        Orders orders = new Orders();
+        orders.setOrderId(1);
+        orders.setTotalPrice(120.0);
+        orders.setStatus(5);
+        orders.setOrderDetails(orderDetailList);
+
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.of(orders));
+
+        OrdersDTO ordersDTO = orderService.changeOrderStatus(1);
+        assertEquals(0, ordersDTO.getStatus());
+        assertEquals(1, ordersDTO.getOrdersId());
+
+    }
+    @Test
     public void changeOrderStatusThrowException(){
-        when(orderRepository.findById(anyInt())).thenThrow(ResourceNotFoundException.class);
+        when(orderRepository.findById(anyInt())).thenReturn(Optional.empty()).thenThrow(ResourceNotFoundException.class);
         assertThatThrownBy(() -> orderService.changeOrderStatus(anyInt())).isInstanceOf(ResourceNotFoundException.class);
     }
 
