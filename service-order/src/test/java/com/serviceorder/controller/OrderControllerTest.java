@@ -215,7 +215,7 @@ public class OrderControllerTest {
     @Test
     public void testGetOrdersByNameFail() throws Exception {
         when(orderService.getOrderByUserName(anyString())).thenReturn(null);
-        mockMvc.perform(get("/api/orders/username/{username}", "name"))
+        mockMvc.perform(get("/api/orders/getorderbyusername/{username}", "name"))
                 .andExpect(status().isNotFound());
     }
 

@@ -43,9 +43,8 @@ public class OrderController {
     @GetMapping("/orders/{id}")
     public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("id") int orderId) throws ResourceNotFoundException {
         OrdersDTO ordersDTO = orderService.getOrderByID(orderId);
-        if (ordersDTO != null) {
+        if (ordersDTO != null)
             return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
-        }
         throw new ResourceNotFoundException(Constant.ORDER_NOT_FOUNT + orderId);
     }
 
@@ -53,27 +52,24 @@ public class OrderController {
     @PutMapping("/orders/{id}")
     public ResponseEntity<Object> changeOrderStatus(@PathVariable("id") int orderId) throws ResourceNotFoundException {
         OrdersDTO ordersDTO = orderService.changeOrderStatus(orderId);
-        if (ordersDTO != null) {
+        if (ordersDTO != null)
             return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
-        }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/orders/getorderbyusername/{username}")
     public ResponseEntity<List<OrdersDTO>> getOrderByUserName(@PathVariable("username") String username) throws ResourceNotFoundException {
         List<OrdersDTO> ordersDTOList = orderService.getOrderByUserName(username);
-        if (ordersDTOList != null) {
+        if (ordersDTOList != null)
             return new ResponseEntity<>(ordersDTOList, HttpStatus.OK);
-        }
         return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/orders")
     public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO) {
         OrdersDTO orderCreated = orderService.createOrder(ordersDTO);
-        if (orderCreated != null) {
+        if (orderCreated != null)
             return new ResponseEntity<>(ordersDTO, HttpStatus.CREATED);
-        }
         return ResponseEntity.badRequest().build();
     }
 

@@ -16,7 +16,6 @@ import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
-import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
