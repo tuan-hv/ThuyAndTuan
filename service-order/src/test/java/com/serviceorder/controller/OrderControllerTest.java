@@ -203,19 +203,16 @@ public class OrderControllerTest {
                 new OrdersDTO(3, 123, new ArrayList<>(), userDTO));
 
         when(orderService.getOrderByUserName("name")).thenReturn(ordersDTOList);
-        mockMvc.perform(get("/api/orders/getorderbyusername/{username}", "name"))
+        mockMvc.perform(get("/api/orders/getby/{username}", "name"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].ordersId", is(1)))
-                .andExpect(jsonPath("$[1].ordersId", is(2)))
-                .andExpect(jsonPath("$[2].ordersId", is(3)));
+                .andExpect(jsonPath("$", hasSize(3)));
     }
 
     @Test
     public void testGetOrdersByNameFail() throws Exception {
         when(orderService.getOrderByUserName(anyString())).thenReturn(null);
-        mockMvc.perform(get("/api/orders/getorderbyusername/{username}", "name"))
+        mockMvc.perform(get("/api/orders/getby/{username}", "name"))
                 .andExpect(status().isNotFound());
     }
 

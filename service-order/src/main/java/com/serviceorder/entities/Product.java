@@ -1,6 +1,6 @@
 package com.serviceorder.entities;
 
-import com.serviceorder.validators.ContactPriceConstraint;
+import com.serviceorder.validators.PriceConstraint;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,7 +32,7 @@ public class Product implements Serializable {
     @Column(name = "description", length = 255)
     private String description;
 
-    @ContactPriceConstraint
+    @PriceConstraint
     @Column(name = "price", precision = 20, scale = 3)
     private double price;
 

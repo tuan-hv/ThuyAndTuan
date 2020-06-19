@@ -48,7 +48,7 @@ public class PaymentController {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null) {
             String paymentInfo = restService.execute(new StringBuilder(urlOrder)
-                            .append("/orders/").append("username/").append(username).toString(),
+                            .append("/orders/getby/").append(username).toString(),
                     HttpMethod.GET, null, null, new ParameterizedTypeReference<String>() {
                     }).getBody();
 

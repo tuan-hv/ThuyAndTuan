@@ -1,6 +1,5 @@
 package com.serviceorder.service;
 
-import com.serviceorder.converts.OrderConvert;
 import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
@@ -10,7 +9,6 @@ import com.serviceorder.entities.OrderDetail;
 import com.serviceorder.entities.Orders;
 import com.serviceorder.entities.Product;
 import com.serviceorder.entities.Users;
-import com.serviceorder.exceptions.FileDuplicateException;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
@@ -21,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
@@ -33,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -59,7 +55,6 @@ public class OrderServiceTest {
 
     @Before
     public void init() {
-        MockitoAnnotations.initMocks(this);
     }
 
 

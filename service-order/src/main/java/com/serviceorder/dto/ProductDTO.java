@@ -2,7 +2,7 @@ package com.serviceorder.dto;
 
 
 import lombok.*;
-import com.serviceorder.validators.ContactPriceConstraint;
+import com.serviceorder.validators.PriceConstraint;
 
 import javax.validation.constraints.NotBlank;
 
@@ -16,7 +16,7 @@ public class ProductDTO extends AbstractDTO {
     private String productName;
     private String image;
     private String description;
-    @ContactPriceConstraint
+    @PriceConstraint
     private double price;
 
 }

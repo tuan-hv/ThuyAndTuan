@@ -3,9 +3,9 @@ package com.serviceorder.validators;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ContactPriceValidator implements ConstraintValidator<ContactPriceConstraint, Double> {
+public class PriceValidator implements ConstraintValidator<PriceConstraint, Double> {
     @Override
-    public void initialize(ContactPriceConstraint constraintAnnotation) {
+    public void initialize(PriceConstraint constraintAnnotation) {
         //todo
     }
 
