@@ -1,6 +1,7 @@
 package com.serviceorder.entities;
 
 import com.serviceorder.validators.ContactPriceConstraint;
+import com.serviceorder.validators.NameConstraint;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,6 +23,7 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
 
+    @NameConstraint
     @NotEmpty(message = "Please provide a name")
     @Column(name = "name", length = 45)
     private String name;
