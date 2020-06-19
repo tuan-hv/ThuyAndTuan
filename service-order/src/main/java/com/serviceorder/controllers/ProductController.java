@@ -42,67 +42,63 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping("/products")
-//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         Optional<List<ProductDTO>> companyDTOS = productService.findAllProduct();
         if (companyDTOS.isPresent()) {
             return ResponseEntity.ok(companyDTOS.get());
         }
-        LOGGER.info("No product found!");
+        LOGGER.info(Constant.NOT_FOUND);
         return ResponseEntity.noContent().build();
     }
 
-    @Retryable(
+    /*@Retryable(
             value = {ResourceNotFoundException.class},
             backoff = @Backoff(delay = 10000L)
-    )
+    )*/
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
 
-        LOGGER.info("Find by id product :: {}" , productId);
-        ProductDTO companyDTO = productService.getProductById(productId)
+        LOGGER.info(Constant.FIND_BY_ID, Constant.PRODUCT, productId);
+        ProductDTO productDTO = productService.getProductById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
-        LOGGER.info("Find by id product success!");
-        return ResponseEntity.ok().body(companyDTO);
+        LOGGER.info(Constant.FIND_BY_SUCCESS, Constant.PRODUCT);
+        return productDTO != null ? ResponseEntity.ok().body(productDTO) : ResponseEntity.notFound().build();
     }
 
     @PostMapping("/products")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
 
         if (productService.checkExist(productDTO))
-            throw new FileDuplicateException("Product is already exist!");
-        LOGGER.info("starting save product...");
-        Optional<ProductDTO> createCompany = productService.createProduct(productDTO);
-        return createCompany.isPresent()
-                ? ResponseEntity.ok().body(createCompany.get())
-                : ResponseEntity.badRequest().build();
+            throw new FileDuplicateException(Constant.PRODUCT + Constant.EXIST);
+        LOGGER.info(Constant.START_SAVE);
+        Optional<ProductDTO> createProduct = productService.createProduct(productDTO);
+        return createProduct.isPresent() ? ResponseEntity.ok().body(createProduct.get()) : ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/products/{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable(value = "id") Integer productId,
                                                     @Valid @RequestBody ProductDTO productDTO) throws ResourceNotFoundException {
 
-        LOGGER.info("starting update product...");
-        ProductDTO updateCompany = productService.updateProduct(productId, productDTO)
+        LOGGER.info(Constant.START_UPDATE);
+        ProductDTO updateProduct = productService.updateProduct(productId, productDTO)
                 .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
-        return ResponseEntity.ok(updateCompany);
+        return updateProduct != null ? ResponseEntity.ok(updateProduct) : ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/products/{id}")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
-        LOGGER.info("start get product by id!");
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
         productRepository.delete(product);
-        LOGGER.info("delete product success!");
+        LOGGER.info(Constant.DELETE_SUCCESS, Constant.PRODUCT);
         return ResponseEntity.ok(ProductConvert.convertProductToProductDto(product));
     }
 
-    @Recover
+  /*  @Recover
     public void recover() {
         LOGGER.info("Recovering");
-    }
+    }*/
 
 }

@@ -3,6 +3,7 @@ package com.serviceorder.controllers;
 import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.services.OrderService;
+import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class OrderController {
     public ResponseEntity<List<OrdersDTO>> getAllOrders() {
         List<OrdersDTO> ordersDTOList = orderService.getAllOrders();
         if (ordersDTOList.isEmpty()) {
-            LOGGER.info("No orders found!");
+            LOGGER.info(Constant.NOT_FOUND);
             return ResponseEntity.noContent().build();
         }
         return new ResponseEntity<>(ordersDTOList, HttpStatus.OK);
@@ -45,7 +46,7 @@ public class OrderController {
         if (ordersDTO != null) {
             return new ResponseEntity<>(ordersDTO, HttpStatus.OK);
         }
-        throw new ResourceNotFoundException("Can not find order by id " + orderId);
+        throw new ResourceNotFoundException(Constant.ORDER_NOT_FOUNT + orderId);
     }
 
 
@@ -57,7 +58,6 @@ public class OrderController {
         }
         return ResponseEntity.notFound().build();
     }
-
 
     @GetMapping("/orders/getorderbyusername/{username}")
     public ResponseEntity<List<OrdersDTO>> getOrderByUserName(@PathVariable("username") String username) throws ResourceNotFoundException {

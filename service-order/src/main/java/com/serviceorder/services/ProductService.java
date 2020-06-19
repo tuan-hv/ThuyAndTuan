@@ -4,6 +4,7 @@ import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.entities.Product;
 import com.serviceorder.repositories.ProductRepository;
+import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +32,14 @@ public class ProductService {
     public Optional<List<ProductDTO>> findAllProduct() {
         List<Product> productList = productRepository.findAll();
         if (!productList.isEmpty()) {
-            LOGGER.info("get all Product success!");
+            LOGGER.info(Constant.GET_SUCCESS, Constant.PRODUCT);
             List<ProductDTO> productDTOList = new ArrayList<>();
             productList.forEach(p ->
                     productDTOList.add(ProductConvert.convertProductToProductDto(p))
             );
             return Optional.of(productDTOList);
         }
-        LOGGER.info("get all product fail!");
+        LOGGER.warn(Constant.GET_FAIL, Constant.PRODUCT);
         return Optional.empty();
     }
 
@@ -47,10 +48,10 @@ public class ProductService {
         Optional<Product> product = productRepository.findById(productId);
 
         if (product.isPresent()) {
-            LOGGER.info("get product by id success...");
+            LOGGER.info(Constant.FIND_BY_SUCCESS, Constant.PRODUCT);
             return Optional.of(ProductConvert.convertProductToProductDto(product.get()));
         }
-        LOGGER.info("get product by id fail...");
+        LOGGER.info(Constant.PRODUCT_NOT_FOUNT);
         return Optional.empty();
     }
 
@@ -58,10 +59,10 @@ public class ProductService {
         try {
             Product productCreate = productRepository.save(ProductConvert.convertProductDtoToProduct(productDTO));
             productDTO.setProductId(productCreate.getProductId());
-            LOGGER.info("save product success!");
+            LOGGER.info(Constant.SAVE_SUCCESS, Constant.PRODUCT);
             return Optional.of(productDTO);
         } catch (Exception e) {
-            LOGGER.error("error with save product ::", e.getMessage());
+            LOGGER.error(Constant.SAVE_FAIL, Constant.PRODUCT);
             return Optional.empty();
         }
     }
@@ -81,11 +82,11 @@ public class ProductService {
             productUpdate.get().setStatus(productDTO.getStatus());
 
             productRepository.save(productUpdate.get());
-            LOGGER.info("update product success!");
+            LOGGER.info(Constant.UPDATE_SUCCESS, Constant.PRODUCT);
             productDTO.setProductId(productId);
             return Optional.of(productDTO);
         }
-        LOGGER.info("update product fail!");
+        LOGGER.info(Constant.UPDATE_FAIL, Constant.PRODUCT);
         return Optional.empty();
     }
 

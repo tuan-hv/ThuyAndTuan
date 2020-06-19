@@ -144,4 +144,15 @@ public class ProductServiceTest {
 
         assertEquals(updateProduct, Optional.empty());
     }
+
+    @Test
+    public void test_check_product_confict() {
+        ProductDTO product = new ProductDTO(3,"tao3","anh3","mota3",0);
+
+        when(productRepository.findByName(anyString())).thenReturn(Optional.empty());
+
+        Boolean check = productService.checkExist(product);
+
+        assertEquals(Boolean.FALSE, check);
+    }
 }

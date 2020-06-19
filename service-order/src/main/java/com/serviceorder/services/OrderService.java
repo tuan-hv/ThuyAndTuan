@@ -16,7 +16,7 @@ import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.OrderDetailRepository;
 import com.serviceorder.repositories.OrderRepository;
 import com.serviceorder.repositories.ProductRepository;
-import javassist.NotFoundException;
+import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +49,11 @@ public class OrderService {
     private ProductRepository productRepository;
 
 
-    public List<OrdersDTO> getAllOrders(){
+    public List<OrdersDTO> getAllOrders() {
         List<Orders> ordersList = orderRepository.findAll();
         List<OrdersDTO> ordersDTOList = new ArrayList<>();
-        if(!ordersList.isEmpty()){
-            LOGGER.info("get all Orders success!");
+        if (!ordersList.isEmpty()) {
+            LOGGER.info(GET_SUCCESS, ORDER);
             ordersList.forEach(order -> {
                 List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
                 List<OrderDetail> orderdetailList = order.getOrderDetails();
@@ -73,14 +73,14 @@ public class OrderService {
             });
             return ordersDTOList;
         }
-        LOGGER.info("get all Orders fail!");
+        LOGGER.warn(GET_FAIL, ORDER);
         return new ArrayList<>();
     }
 
-    public OrdersDTO getOrderByID(int orderID)  {
+    public OrdersDTO getOrderByID(int orderID) {
         Optional<Orders> orders = orderRepository.findById(orderID);
         OrdersDTO ordersDTO;
-        if(orders.isPresent()){
+        if (orders.isPresent()) {
             List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
             List<OrderDetail> orderdetailList = orders.get().getOrderDetails();
             Users users = orders.get().getUsers();
@@ -95,19 +95,18 @@ public class OrderService {
             });
             ordersDTO.setUserDTO(userDTO);
             ordersDTO.setOrderdetailDTOS(orderdetailDTOList);
-            LOGGER.info("get Orders by id successfully");
+            LOGGER.info(FIND_BY_SUCCESS, ORDER);
             return ordersDTO;
-        }else {
-            LOGGER.info("get Orders by id fail");
+        } else {
+            LOGGER.warn(ORDER_NOT_FOUNT);
             return null;
         }
     }
 
-    public List<OrdersDTO> getOrderByUserName(String username) throws ResourceNotFoundException{
+    public List<OrdersDTO> getOrderByUserName(String username) throws ResourceNotFoundException {
         List<Orders> ordersList = orderRepository.findOrdersByUserName(username);
         List<OrdersDTO> ordersDTOList = new ArrayList<>();
-        if(!ordersList.isEmpty()){
-            LOGGER.info("get Orders by name success!");
+        if (!ordersList.isEmpty()) {
             ordersList.forEach(order -> {
                 List<OrderdetailDTO> orderdetailDTOList = new ArrayList<>();
                 List<OrderDetail> orderdetailList = order.getOrderDetails();
@@ -125,73 +124,69 @@ public class OrderService {
                 ordersDTO.setUserDTO(userDTO);
                 ordersDTOList.add(ordersDTO);
             });
+            LOGGER.info(GET_ORDER_NAME_SUCCESS);
             return ordersDTOList;
         }
-        LOGGER.info("get Orders by name fail!");
-        throw new ResourceNotFoundException("get order by name fail");
+        LOGGER.error(GET_ORDER_NAME_FAIL);
+        throw new ResourceNotFoundException(GET_ORDER_NAME_FAIL);
     }
 
 
-
     public OrdersDTO createOrder(OrdersDTO ordersDTO) {
-            Orders orders = OrderConvert.convertOrderDTOToOrder(ordersDTO);
-            Orders orderCreate = orderRepository.save(orders);
-            UserDTO userDTO = ordersDTO.getUserDTO();
-            Users users = UsersConvert.convertUserDTOToUser(userDTO);
-            List<OrderDetail> orderDetailsList = new ArrayList<>();
-            List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderdetailDTOS();
-            orderDetailDTOList.forEach(o -> {
-                OrderDetail orderDetail = OrderDetailConvert.convertOrderDetailDTOToOrderDetail(o);
-                Optional<Product> product = productRepository.findById(o.getProductDTO().getProductId());
-                if(product.isPresent()){
-                    orderDetail.setProduct(product.get());
-                    orderDetail.setPrice(product.get().getPrice() * orderDetail.getQuantity());
-                    orderDetailsList.add(orderDetail);
-                    orders.setOrderDetails(orderDetailsList);
-                    orders.setUsers(users);
-                    orderDetail.setOrders(orders);
-                    orderDetailRepository.save(orderDetail);
-                }
-            });
-            ordersDTO.setOrdersId(orderCreate.getOrderId());
-            LOGGER.info("create order successfully!");
-            return ordersDTO;
+        Orders orders = OrderConvert.convertOrderDTOToOrder(ordersDTO);
+        Orders orderCreate = orderRepository.save(orders);
+        UserDTO userDTO = ordersDTO.getUserDTO();
+        Users users = UsersConvert.convertUserDTOToUser(userDTO);
+        List<OrderDetail> orderDetailsList = new ArrayList<>();
+        List<OrderdetailDTO> orderDetailDTOList = ordersDTO.getOrderdetailDTOS();
+        orderDetailDTOList.forEach(o -> {
+            OrderDetail orderDetail = OrderDetailConvert.convertOrderDetailDTOToOrderDetail(o);
+            Optional<Product> product = productRepository.findById(o.getProductDTO().getProductId());
+            if (product.isPresent()) {
+                orderDetail.setProduct(product.get());
+                orderDetail.setPrice(product.get().getPrice() * orderDetail.getQuantity());
+                orderDetailsList.add(orderDetail);
+                orders.setOrderDetails(orderDetailsList);
+                orders.setUsers(users);
+                orderDetail.setOrders(orders);
+                orderDetailRepository.save(orderDetail);
+            }
+        });
+        ordersDTO.setOrdersId(orderCreate.getOrderId());
+        LOGGER.info(SAVE_SUCCESS, ORDER);
+        return ordersDTO;
     }
 
 
     public OrdersDTO changeOrderStatus(int orderID) throws ResourceNotFoundException {
         Optional<Orders> orders = orderRepository.findById(orderID);
         OrdersDTO ordersDTO;
-        if(orders.isPresent()){
+        if (orders.isPresent()) {
             ordersDTO = OrderConvert.convertOrdertoToOrderDTO(orders.get());
-            switch (orders.get().getStatus()){
-              case 0:
-                  orders.get().setStatus(ORDER_PROCESSING);
-                  break;
-              case 1:
-                  orders.get().setStatus(ORDER_SUCCESS);
-                  break;
-              case 2:
-                  orders.get().setStatus(ORDER_CANCLED);
-                  break;
-              default:
-                  orders.get().setStatus(ORDER_CONFIRM);
-                  break;
-          }
+            switch (orders.get().getStatus()) {
+                case 0:
+                    orders.get().setStatus(ORDER_PROCESSING);
+                    break;
+                case 1:
+                    orders.get().setStatus(ORDER_SUCCESS);
+                    break;
+                case 2:
+                    orders.get().setStatus(ORDER_CANCLED);
+                    break;
+                default:
+                    orders.get().setStatus(ORDER_CONFIRM);
+                    break;
+            }
             orderRepository.save(orders.get());
             ordersDTO.setOrdersId(orders.get().getOrderId());
             ordersDTO.setStatus(orders.get().getStatus());
-            LOGGER.info("change order status successfully!");
+            LOGGER.info(CHANGE_ORDER_SUCCESS);
             return ordersDTO;
-        }else {
-            LOGGER.info("change order status fail!");
-            throw new ResourceNotFoundException("Can not find order id "+ orderID);
+        } else {
+            LOGGER.info(CHANGE_ORDER_FAIL);
+            throw new ResourceNotFoundException(ORDER_NOT_FOUNT + orderID);
         }
     }
-
-
-
-
 
 
 }
