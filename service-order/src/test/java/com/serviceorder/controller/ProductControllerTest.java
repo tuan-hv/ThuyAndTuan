@@ -2,25 +2,21 @@ package com.serviceorder.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceorder.controllers.ProductController;
+import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.entities.Product;
-import com.serviceorder.exceptions.FileDuplicateException;
+import com.serviceorder.exceptions.GlobalExceptionHandler;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
-import com.serviceorder.dto.ProductDTO;
-import com.serviceorder.exceptions.GlobalExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -116,7 +112,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_create_product_success() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
+        ProductDTO productDTO = new ProductDTO(1, "Adddddd", "anh1", "mota1", 1);
 
         when(productService.checkExist(productDTO)).thenReturn(false);
         when(productService.createProduct(any(ProductDTO.class))).thenReturn(Optional.of(productDTO));
@@ -130,7 +126,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_create_product_fail_409_conflict() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1, "tao1", "anh1", "mota1", 1);
+        ProductDTO productDTO = new ProductDTO(1, "Adddddd", "anh1", "mota1", 1);
         when(productService.checkExist(any(ProductDTO.class))).thenReturn(true);
         mockMvc.perform(
                 post("/api/products")
@@ -153,7 +149,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_update_product_success() throws Exception {
-        ProductDTO productDTO = new ProductDTO(1, "tao", "anh", "mota", 1);
+        ProductDTO productDTO = new ProductDTO(1, "Adddddd", "anh", "mota", 1);
 
         when(productService.updateProduct(anyInt(), any(ProductDTO.class))).thenReturn(Optional.of(productDTO));
         mockMvc.perform(put("/api/products/{id}", 1)

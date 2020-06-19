@@ -13,10 +13,11 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class ProductDTO extends AbstractDTO {
     private int productId;
-    @NotBlank(message = "Product name not blank!")
     @NameConstraint
     private String productName;
+    @NotBlank(message = "{notnull.product.image}")
     private String image;
+    @NotBlank(message = "description not blank!")
     private String description;
     @PriceConstraint
     private double price;

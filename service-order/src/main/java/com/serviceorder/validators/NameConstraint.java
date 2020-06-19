@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NameConstraint {
-    String message() default "Invalid name";
+    String message() default "{invalid.name}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
