@@ -17,7 +17,7 @@ public class ProductDTO extends AbstractDTO {
     private String productName;
     @NotBlank(message = "{notnull.product.image}")
     private String image;
-    @NotBlank(message = "description not blank!")
+    @NotBlank(message = "{notnull.product.description}")
     private String description;
     @PriceConstraint
     private double price;

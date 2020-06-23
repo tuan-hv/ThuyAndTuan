@@ -5,11 +5,8 @@ import com.serviceorder.dto.OrderdetailDTO;
 import com.serviceorder.dto.OrdersDTO;
 import com.serviceorder.dto.ProductDTO;
 import com.serviceorder.dto.UserDTO;
-import com.serviceorder.entities.OrderDetail;
-import com.serviceorder.entities.Users;
 import com.serviceorder.exceptions.GlobalExceptionHandler;
-import com.serviceorder.repositories.OrderRepository;
-import com.serviceorder.services.OrderService;
+import com.serviceorder.servicesimp.OrderServiceImp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -27,10 +24,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static com.serviceorder.controller.ProductControllerTest.asJsonString;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.anyString;
@@ -57,7 +52,7 @@ public class OrderControllerTest {
     private OrderController orderController;
 
     @Mock
-    private OrderService orderService;
+    private OrderServiceImp orderServiceImp;
 
 
     @Before
@@ -82,7 +77,7 @@ public class OrderControllerTest {
                 new OrdersDTO(2, 123, orderdetailDTOList2, null),
                 new OrdersDTO(3, 123, orderdetailDTOList3, null));
 
-        when(orderService.getAllOrders()).thenReturn(ordersDTOList);
+        when(orderServiceImp.getAllOrders()).thenReturn(ordersDTOList);
         mockMvc.perform(get("/api/orders"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -97,7 +92,7 @@ public class OrderControllerTest {
     @Test
     @DisplayName("Test getAllOrderFail ")
     public void testGetAllOrderFail() throws Exception {
-        when(orderService.getAllOrders()).thenReturn(new ArrayList<>());
+        when(orderServiceImp.getAllOrders()).thenReturn(new ArrayList<>());
         mockMvc.perform(get("/api/orders"))
                 .andExpect(status().isNoContent());
     }
@@ -106,7 +101,7 @@ public class OrderControllerTest {
     public void testGetOrderbyId() throws Exception {
         List<OrderdetailDTO> orderdetailDTOList1 = new ArrayList<>();
         OrdersDTO ordersDTO = new OrdersDTO(1, 123, orderdetailDTOList1, null);
-        when(orderService.getOrderByID(anyInt())).thenReturn(ordersDTO);
+        when(orderServiceImp.getOrderByID(anyInt())).thenReturn(ordersDTO);
 
         mockMvc.perform(get("/api/orders/{id}", 1))
                 .andExpect(status().isOk())
@@ -117,7 +112,7 @@ public class OrderControllerTest {
 
     @Test
     public void testGetOrderbyIdFail() throws Exception {
-        when(orderService.getOrderByID(anyInt())).thenReturn(null);
+        when(orderServiceImp.getOrderByID(anyInt())).thenReturn(null);
         mockMvc.perform(get("/api/orders/{id}", 111))
                 .andExpect(status().isNotFound());
     }
@@ -130,7 +125,7 @@ public class OrderControllerTest {
         orderDTO.setTotalPrice(120.0);
         orderDTO.setStatus(1);
         orderDTO.setOrderdetailDTOS(orderDetailList);
-        when(orderService.changeOrderStatus(1)).thenReturn(orderDTO);
+        when(orderServiceImp.changeOrderStatus(1)).thenReturn(orderDTO);
 
         mockMvc.perform(put("/api/orders/{id}", 1))
                 .andExpect(status().isOk())
@@ -141,7 +136,7 @@ public class OrderControllerTest {
 
     @Test
     public void testChangeStatusfail() throws Exception {
-        when(orderService.changeOrderStatus(1)).thenReturn(null);
+        when(orderServiceImp.changeOrderStatus(1)).thenReturn(null);
         mockMvc.perform(put("/api/orders/{id}", 1))
                 .andExpect(status().isNotFound());
     }
@@ -167,7 +162,7 @@ public class OrderControllerTest {
         ordersDTO.setStatus(0);
         ordersDTO.setOrderdetailDTOS(null);
 
-        when(orderService.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(ordersDTO);
+        when(orderServiceImp.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(ordersDTO);
         mockMvc.perform(
                 post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +178,7 @@ public class OrderControllerTest {
         ordersDTO.setTotalPrice(123.0);
         ordersDTO.setStatus(0);
         ordersDTO.setOrderdetailDTOS(null);
-        when(orderService.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(null);
+        when(orderServiceImp.createOrder(Matchers.any(OrdersDTO.class))).thenReturn(null);
         mockMvc.perform(
                 post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -202,7 +197,7 @@ public class OrderControllerTest {
                 new OrdersDTO(2, 123, new ArrayList<>(), userDTO),
                 new OrdersDTO(3, 123, new ArrayList<>(), userDTO));
 
-        when(orderService.getOrderByUserName("name")).thenReturn(ordersDTOList);
+        when(orderServiceImp.getOrderByUserName("name")).thenReturn(ordersDTOList);
         mockMvc.perform(get("/api/orders/getby/{username}", "name"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -211,7 +206,7 @@ public class OrderControllerTest {
 
     @Test
     public void testGetOrdersByNameFail() throws Exception {
-        when(orderService.getOrderByUserName(anyString())).thenReturn(null);
+        when(orderServiceImp.getOrderByUserName(anyString())).thenReturn(null);
         mockMvc.perform(get("/api/orders/getby/{username}", "name"))
                 .andExpect(status().isNotFound());
     }

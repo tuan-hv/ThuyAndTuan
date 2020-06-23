@@ -1,25 +1,21 @@
 package com.serviceorder.controllers;
 
-import com.serviceorder.converts.ProductConvert;
 import com.serviceorder.dto.ProductDTO;
-import com.serviceorder.entities.Product;
-import com.serviceorder.exceptions.FileDuplicateException;
 import com.serviceorder.exceptions.ResourceNotFoundException;
-import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
 import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -38,14 +34,11 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductRepository productRepository;
-
     @GetMapping("/products")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        Optional<List<ProductDTO>> companyDTOS = productService.findAllProduct();
-        if (companyDTOS.isPresent()) {
-            return ResponseEntity.ok(companyDTOS.get());
+        List<ProductDTO> companyDTOS = productService.findAllProduct();
+        if (!companyDTOS.isEmpty()) {
+            return ResponseEntity.ok(companyDTOS);
         }
         LOGGER.info(Constant.NOT_FOUND);
         return ResponseEntity.noContent().build();
@@ -60,20 +53,17 @@ public class ProductController {
             throws ResourceNotFoundException {
 
         LOGGER.info(Constant.FIND_BY_ID, Constant.PRODUCT, productId);
-        ProductDTO productDTO = productService.getProductById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
+        ProductDTO productDTO = productService.getProductById(productId);
         LOGGER.info(Constant.FIND_BY_SUCCESS, Constant.PRODUCT);
-        return productDTO != null ? ResponseEntity.ok().body(productDTO) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok().body(productDTO);
     }
 
     @PostMapping("/products")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
-
-        if (productService.checkExist(productDTO))
-            throw new FileDuplicateException(Constant.PRODUCT + Constant.EXIST);
         LOGGER.info(Constant.START_SAVE);
         Optional<ProductDTO> createProduct = productService.createProduct(productDTO);
-        return createProduct.isPresent() ? ResponseEntity.ok().body(createProduct.get()) : ResponseEntity.badRequest().build();
+        return createProduct.isPresent() ? ResponseEntity.ok().body(createProduct.get())
+                : ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/products/{id}")
@@ -81,19 +71,22 @@ public class ProductController {
                                                     @Valid @RequestBody ProductDTO productDTO) throws ResourceNotFoundException {
 
         LOGGER.info(Constant.START_UPDATE);
-        ProductDTO updateProduct = productService.updateProduct(productId, productDTO)
-                .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
-        return updateProduct != null ? ResponseEntity.ok(updateProduct) : ResponseEntity.badRequest().build();
+        Optional<ProductDTO> updateProduct = productService.updateProduct(productId, productDTO);
+        return updateProduct.isPresent() ? ResponseEntity.ok(updateProduct.get())
+                : ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable(value = "id") Integer productId)
-            throws ResourceNotFoundException {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException(Constant.PRODUCT_NOT_FOUNT + productId));
-        productRepository.delete(product);
-        LOGGER.info(Constant.DELETE_SUCCESS, Constant.PRODUCT);
-        return ResponseEntity.ok(ProductConvert.convertProductToProductDto(product));
+    public ResponseEntity<Map> deleteProduct(@PathVariable(value = "id") Integer productId) {
+        try {
+            Map map = new HashMap();
+            Boolean productDelete = productService.deleteProduct(productId);
+            map.put("Delete", productDelete);
+            LOGGER.info(Constant.DELETE_SUCCESS, Constant.PRODUCT);
+            return new ResponseEntity<>(map, HttpStatus.EXPECTATION_FAILED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
   /*  @Recover
