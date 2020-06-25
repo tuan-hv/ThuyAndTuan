@@ -7,6 +7,7 @@ import com.serviceorder.entities.Product;
 import com.serviceorder.exceptions.GlobalExceptionHandler;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.ProductRepository;
+import com.serviceorder.services.ProductService;
 import com.serviceorder.servicesimp.ProductServiceImp;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class ProductControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private ProductServiceImp productServiceImp;
+    private ProductService productServiceImp;
 
     @Mock
     private ProductRepository productRepository;
@@ -109,17 +110,6 @@ public class ProductControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.productId", is(1)));
         verify(productServiceImp, times(1)).getProductById(1);
-        verifyNoMoreInteractions(productServiceImp);
-    }
-
-    @Test
-    public void test_get_product_by_id_fail_404_not_found() throws Exception {
-        when(productServiceImp.getProductById(anyInt())).thenReturn(null);
-
-        mockMvc.perform(get("/api/products/{id}", 100))
-                .andExpect(status().isNotFound());
-
-        verify(productServiceImp, times(1)).getProductById(100);
         verifyNoMoreInteractions(productServiceImp);
     }
 

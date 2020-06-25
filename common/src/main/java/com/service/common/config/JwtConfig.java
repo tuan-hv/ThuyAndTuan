@@ -1,4 +1,4 @@
-package com.service.auth.configrations;
+package com.service.common.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

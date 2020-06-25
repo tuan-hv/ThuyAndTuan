@@ -1,20 +1,24 @@
-package com.service.image.services;
+package com.service.image.controlers;
 
+import com.service.image.services.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
 
+@RestController
+@RequestMapping("/")
 public class ImageController {
 
     @Autowired
     private Environment env;
 
-    @RequestMapping("/")
+    @RequestMapping
     public String home() {
-        return "";
+        return "thuy cho mau kheo len";
     }
 
     @RequestMapping("/images")

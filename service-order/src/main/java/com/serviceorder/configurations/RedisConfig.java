@@ -1,3 +1,4 @@
+/*
 package com.serviceorder.configurations;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -34,4 +35,4 @@ public class RedisConfig {
         template.setConnectionFactory(redisConnectionFactory);
         return template;
     }
-}
+}*/
