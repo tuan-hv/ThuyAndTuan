@@ -1,6 +1,8 @@
 package com.serviceorder.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,28 +15,38 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @Autowired
+    private final MessageSource messageSource;
+
+    @Autowired
+    public GlobalExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<Object> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request, Locale locale) {
         log.error(ex.getMessage(), ex);
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        String errorMessage = messageSource.getMessage(ex.getMessage(), null, locale);
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), errorMessage, request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> globleExcpetionHandler(Exception ex, WebRequest request) {
+    public ResponseEntity<Object> globleExcpetionHandler(Exception ex, WebRequest request, Locale locale) {
         log.error(ex.getMessage(), ex);
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(FileDuplicateException.class)
-    public ResponseEntity<Object> FileDuplicateException(ResourceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<Object> FileDuplicateException(ResourceNotFoundException ex, WebRequest request, Locale locale) {
         log.error(ex.getMessage(), ex);
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);

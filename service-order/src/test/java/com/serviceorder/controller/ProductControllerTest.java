@@ -72,7 +72,7 @@ public class ProductControllerTest {
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(productController)
-                .setControllerAdvice(new GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler(null))
                 .addFilters(new CORSFilter())
                 .build();
     }

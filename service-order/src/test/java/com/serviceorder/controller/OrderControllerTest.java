@@ -60,7 +60,7 @@ public class OrderControllerTest {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(orderController)
-                .setControllerAdvice(new GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler(null))
                 .addFilters(new CORSFilter())
                 .build();
     }

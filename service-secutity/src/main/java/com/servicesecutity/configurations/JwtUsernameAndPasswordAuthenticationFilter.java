@@ -1,13 +1,14 @@
-package com.service.auth.configrations;
+package com.servicesecutity.configurations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.service.auth.services.UserCredentials;
 import com.service.common.config.JwtConfig;
+import com.servicesecutity.security.UserPrinciple;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -38,12 +39,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
 
         try {
 
             // 1. Get credentials from request
-            UserCredentials creds = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
+            UserPrinciple creds = new ObjectMapper().readValue(request.getInputStream(), UserPrinciple.class);
 
             // 2. Create auth object (contains credentials) which will be used by auth manager
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

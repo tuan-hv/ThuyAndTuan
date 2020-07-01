@@ -3,6 +3,7 @@ package com.service.gallery.controllers;
 import com.service.gallery.services.Gallery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,12 +21,12 @@ public class GalleryController {
     @Autowired
     private Environment env;
 
-    @RequestMapping
+    @GetMapping
     public String home() {
         return "chao thuy cho";
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public Gallery getGallery(@PathVariable final int id) {
         Gallery gallery = new Gallery();
         gallery.setId(id);

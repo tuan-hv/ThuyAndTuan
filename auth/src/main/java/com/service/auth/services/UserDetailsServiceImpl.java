@@ -13,18 +13,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service   // It has to be annotated with @Service.
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService  {
 
     @Autowired
     private BCryptPasswordEncoder encoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username){
 
         // hard coding the users. All passwords must be encoded.
         final List<AppUser> users = Arrays.asList(
-                new AppUser(1, "omar", encoder.encode("12345"), "USER"),
+                new AppUser(1, "tuanden", encoder.encode("12345"), "USER"),
                 new AppUser(2, "admin", encoder.encode("12345"), "ADMIN")
         );
 

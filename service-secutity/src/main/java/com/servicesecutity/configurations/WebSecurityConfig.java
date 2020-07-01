@@ -1,5 +1,6 @@
 package com.servicesecutity.configurations;
 
+import com.service.common.config.JwtConfig;
 import com.servicesecutity.security.JwtAuthEntryPoint;
 import com.servicesecutity.security.JwtAuthTokenFilter;
 import com.servicesecutity.security.UserDetailsServiceImpl;
@@ -26,6 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
+    private JwtConfig jwtConfig;
+
+    @Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
 
     @Bean
@@ -46,6 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -64,6 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/user/**", "/api/role/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig))
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
