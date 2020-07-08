@@ -80,6 +80,7 @@ public class ProductControllerTest {
     @Test
     @DisplayName("Test findAll()")
     public void test_get_all_product_success() throws Exception {
+
         when(productServiceImp.findAllProduct()).thenReturn(productList);
 
         mockMvc.perform(get("/api/products"))

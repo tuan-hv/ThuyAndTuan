@@ -11,6 +11,9 @@ import com.serviceorder.utils.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -101,6 +104,11 @@ public class ProductServiceImp implements ProductService {
 
     public Boolean checkExist(ProductDTO productDTO) {
         return productRepository.findByName(productDTO.getProductName()).isPresent();
+    }
+
+    @Recover
+    public void recover() {
+        LOGGER.info("Recovering");
     }
 
 }

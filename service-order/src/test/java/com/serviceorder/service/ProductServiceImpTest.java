@@ -6,9 +6,11 @@ import com.serviceorder.entities.Product;
 import com.serviceorder.exceptions.ResourceNotFoundException;
 import com.serviceorder.repositories.ProductRepository;
 import com.serviceorder.services.ProductService;
+import com.serviceorder.servicesimp.ProductServiceImp;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.internal.runners.statements.ExpectException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,7 +33,8 @@ import static org.mockito.Mockito.*;
 public class ProductServiceImpTest {
 
     @InjectMocks
-    private ProductService productService;
+    private ProductServiceImp productService;
+
 
     @Mock
     private ProductRepository productRepository;
@@ -55,7 +58,7 @@ public class ProductServiceImpTest {
 
         productDTO2 = new ProductDTO();
 
-        productDTO = new ProductDTO(3,"tao3","anh3","mota3",0);
+        productDTO = new ProductDTO(3, "tao3", "anh3", "mota3", 0);
     }
 
     @Test
@@ -79,17 +82,16 @@ public class ProductServiceImpTest {
     public void test_get_product_by_id_success() throws ResourceNotFoundException {
         when(productRepository.findById(anyInt())).thenReturn(Optional.of(product));
 
-       ProductDTO productDTO = productService.getProductById(1);
+        ProductDTO productDTO = productService.getProductById(1);
 
         assertEquals(1, productDTO.getProductId());
         assertEquals("product", productDTO.getProductName());
     }
 
-    @Test
+    @Test(expected = ResourceNotFoundException.class)
     public void test_get_product_by_id_fail_404_not_found() throws ResourceNotFoundException {
-        when(productRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(productRepository.findById(anyInt())).thenThrow(ResourceNotFoundException.class);
         ProductDTO productDTO = productService.getProductById(111);
-        assertEquals(Optional.empty(), productDTO);
     }
 
     @Test

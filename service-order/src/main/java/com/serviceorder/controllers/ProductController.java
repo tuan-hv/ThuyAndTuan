@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,11 +46,10 @@ public class ProductController {
         LOGGER.info(Constant.NOT_FOUND);
         return ResponseEntity.noContent().build();
     }
-
-    /*@Retryable(
+    @Retryable(
             value = {ResourceNotFoundException.class},
             backoff = @Backoff(delay = 10000L)
-    )*/
+    )
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable(value = "id") Integer productId)
             throws ResourceNotFoundException {
@@ -89,9 +91,9 @@ public class ProductController {
         }
     }
 
-  /*  @Recover
-    public void recover() {
-        LOGGER.info("Recovering");
-    }*/
+    @Recover
+    public void helpHere() {
+        System.out.println("Recovery place!");
+    }
 
 }
