@@ -9,4 +9,6 @@ package com.serviceorder.repositories.specifications;
  * @since 09/07/2020
  */
 public class AccountSpecification {
+
+
 }

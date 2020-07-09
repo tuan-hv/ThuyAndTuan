@@ -62,4 +62,5 @@ public class AccountTypeServiceImp implements AccountTypeService {
         accountTypeRepository.save(accountType);
         return accountTypeDTO;
     }
+
 }

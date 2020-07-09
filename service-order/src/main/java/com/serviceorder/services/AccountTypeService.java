@@ -19,4 +19,5 @@ public interface AccountTypeService {
     List<AccountTypeDTO> findAllAccountType();
 
     AccountTypeDTO addAccountType(AccountTypeDTO accountTypeDTO);
+
 }

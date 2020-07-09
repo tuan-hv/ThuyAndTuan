@@ -3,6 +3,9 @@ package com.serviceorder.repositories.specifications;
 import com.serviceorder.entities.AccountType;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * ThuyAndTuan
  *
@@ -13,6 +16,9 @@ import org.springframework.data.jpa.domain.Specification;
  */
 public class AccountTypeSpecification {
 
+    private final List<Specification<AccountType>> accountTypeSpecList = new ArrayList<>();
+
+
     /**
      * Lấy ra type có id chỉ định
      * @param typeId
@@ -22,5 +28,18 @@ public class AccountTypeSpecification {
         return (root, query, cb) -> cb.equal(root.get("typeId"), typeId);
     }
 
+
+    /**
+     * Lấy ra type có status chỉ định
+     * @param status
+     * @return
+     */
+    public void byStatus(int status){
+        accountTypeSpecList.add(hasStatus(status));
+    }
+
+    public Specification<AccountType> hasStatus(int status){
+        return (root, query, cb) -> cb.equal(root.get("status"), status);
+    }
 
 }
