@@ -45,6 +45,13 @@ public class CustomerServiceImp implements CustomerService {
         return pageResult.map(CustomerConvert::convertCustomerToCustomerDTO);
     }
 
+    @Override
+    public CustomerDTO addCustomer(CustomerDTO customerDTO) {
+        Customer customer = CustomerConvert.convertCustomerDTOToCustomer(customerDTO);
+        customerRepository.save(customer);
+        customerDTO.setCustomerId(customer.getCustomerId());
+        return customerDTO;
+    }
 
 
 }

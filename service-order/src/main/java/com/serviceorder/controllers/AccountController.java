@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 import static com.serviceorder.apiresponse.APIResponse.setDataForAPIResponse;
+import static com.serviceorder.utils.Constant.FIND_BY_ID;
 
 /**
  * ThuyAndTuan
@@ -34,7 +35,7 @@ public class AccountController {
     @GetMapping("/account/id/{id}")
     ResponseEntity<APIResponse<Optional<AccountDTO>>> findAccountById(@PathVariable("id") int accountId){
         Optional<AccountDTO> account = accountServiceImp.findAccountById(accountId);
-        APIResponse apiResponse = setDataForAPIResponse(account, "find account by id successful", HttpStatus.OK.value());
+        APIResponse apiResponse = setDataForAPIResponse(account, FIND_BY_ID, HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 

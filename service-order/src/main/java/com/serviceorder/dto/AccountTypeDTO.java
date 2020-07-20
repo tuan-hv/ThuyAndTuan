@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -16,13 +17,15 @@ import java.util.List;
  * @created_by thuynt
  * @since 08/07/2020
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class AccountTypeDTO extends AbstractDTO{
     private int typeId;
+    @NotBlank(message = "{notnull.account.type.name}")
     private String typeName;
-   // private List<AccountDTO> accountDTOList;
+    private int status;
+    //private List<AccountDTO> accountDTOList;
 
 }

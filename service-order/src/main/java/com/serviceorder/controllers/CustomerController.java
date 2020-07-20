@@ -11,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.serviceorder.utils.Constant.*;
 
 /**
  * ThuyAndTuan
@@ -30,7 +33,7 @@ public class CustomerController {
 
     @GetMapping("/customer/id/{id}")
     public ResponseEntity<APIResponse<Optional<CustomerDTO>>> findCustomerById(@PathVariable("id") int customerId){
-        APIResponse apiResponse = APIResponse.setDataForAPIResponse(customerServiceImp.findCustomerById(customerId), "Find customer by id successful", HttpStatus.OK.value());
+        APIResponse apiResponse = APIResponse.setDataForAPIResponse(customerServiceImp.findCustomerById(customerId), FIND_BY_ID, HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
@@ -42,7 +45,13 @@ public class CustomerController {
             @RequestParam(defaultValue = "1", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int limit){
         Page<CustomerDTO> customerDTOPage = customerServiceImp.getAllCustomer(customerName, customerId, page, limit);
-        APIResponse apiResponse = APIResponse.setDataForAPIResponse(customerDTOPage, "Find all customerDTO successful", HttpStatus.OK.value());
+        APIResponse apiResponse = APIResponse.setDataForAPIResponse(customerDTOPage, GET_SUCCESS, HttpStatus.OK.value());
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/customer/")
+    public ResponseEntity<APIResponse<CustomerDTO>> addCustomer(@Valid @RequestBody CustomerDTO customerDTO){
+        APIResponse apiResponse = APIResponse.setDataForAPIResponse(customerServiceImp.addCustomer(customerDTO), SAVE_SUCCESS, HttpStatus.OK.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 

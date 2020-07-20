@@ -18,5 +18,6 @@ public interface CustomerService {
 
     Optional<CustomerDTO> findCustomerById(int customerId);
     Page<CustomerDTO> getAllCustomer(String customerName, Integer customerId, int page, int limit);
+    CustomerDTO addCustomer(CustomerDTO customerDTO);
 
 }

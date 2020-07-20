@@ -41,7 +41,7 @@ public class Account {
     @Column(name = "status")
     private int status;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     @JoinColumn(name = "type_id")
     private AccountType accountType;
 
